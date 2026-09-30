@@ -78,7 +78,7 @@ export async function launchWindowsInstaller(config: WindowsInstallerConfig): Pr
   { windowsHide: true, timeout: 120000, env: { ...env, WORKBENCH_UPDATE_CONFIG: configFile, WORKBENCH_UPDATE_SCRIPT: Buffer.from(WINDOWS_INSTALL_SCRIPT, 'utf16le').toString('base64') } })
   const helperPid = Number(stdout.trim())
   if (!Number.isSafeInteger(helperPid) || helperPid <= 0) throw new Error('The Windows update helper could not start. Try installing again.')
-  const deadline = Date.now() + 60000
+  const deadline = Date.now() + 120000
   try {
     while (Date.now() < deadline) {
       const failure = await fs.readFile(errorLog, 'utf8').catch((error: NodeJS.ErrnoException) => { if (error.code !== 'ENOENT') throw error; return '' })

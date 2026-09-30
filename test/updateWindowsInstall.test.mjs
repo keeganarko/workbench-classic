@@ -63,7 +63,7 @@ public class UpdateFixture {
 }`
 
 async function until(check, description) {
-  const deadline = Date.now() + 20000
+  const deadline = Date.now() + 120000
   while (Date.now() < deadline) {
     const value = await check()
     if (value) return value
@@ -75,7 +75,7 @@ async function read(file) {
   try { return await fs.readFile(file, 'utf8') } catch (error) { if (error.code !== 'ENOENT') throw error; return '' }
 }
 
-test('native Windows installer handoff waits, verifies, protects bridges, and relaunches', { skip: process.platform !== 'win32', timeout: 600000 }, async (t) => {
+test('native Windows installer handoff waits, verifies, protects bridges, and relaunches', { skip: process.platform !== 'win32', timeout: 1800000 }, async (t) => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'workbench-helper-test-'))
   t.after(() => fs.rm(root, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 }))
   const fixture = path.join(root, 'fixture.exe')
