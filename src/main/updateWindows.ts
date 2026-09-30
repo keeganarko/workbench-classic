@@ -17,7 +17,7 @@ export interface WindowsSignature { status: string; signer: string | null }
 export async function windowsSignature(file: string): Promise<WindowsSignature> {
   const { stdout } = await promisify(execFile)(powershellPath(), ['-NoProfile', '-NonInteractive', '-Command',
     "$ErrorActionPreference='Stop'; $s=Get-AuthenticodeSignature -LiteralPath $env:WORKBENCH_UPDATE_FILE; @{status=$s.Status.ToString(); signer=$(if ($s.SignerCertificate) { $s.SignerCertificate.Thumbprint } else { $null })} | ConvertTo-Json -Compress"],
-  { env: { ...powershellEnv(), WORKBENCH_UPDATE_FILE: file }, windowsHide: true, timeout: 30000 })
+  { env: { ...powershellEnv(), WORKBENCH_UPDATE_FILE: file }, windowsHide: true, timeout: 120000 })
   const result = JSON.parse(stdout.trim()) as WindowsSignature
   if (!result || typeof result.status !== 'string' || !(result.signer === null || typeof result.signer === 'string' && /^[A-F0-9]{40,64}$/i.test(result.signer))) throw new Error('Windows could not verify the update publisher.')
   return { status: result.status, signer: result.signer?.toUpperCase() ?? null }
@@ -33,10 +33,13 @@ export function windowsInstallerTrust(current: WindowsSignature, installer: Wind
  * children close with main, but MCP bridges re-enter the executable as Node
  * and belong to still-running agents. Keep those connections alive. A failed
  * or malformed process query cannot be interpreted as permission to install. */
+// PowerShell cold starts and the first WMI process query can take over 20 s on
+// Windows ARM, so these calls allow two minutes rather than failing a slow but
+// healthy machine. A hung call still ends; it just ends later.
 export async function requireNoWindowsAgentConnections(executable: string, pid: number): Promise<void> {
   const { stdout } = await promisify(execFile)(powershellPath(), ['-NoProfile', '-NonInteractive', '-Command',
     "$ErrorActionPreference='Stop'; @(Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -eq $env:WORKBENCH_UPDATE_EXE -and $_.ProcessId -ne [int]$env:WORKBENCH_UPDATE_PID -and $_.CommandLine -notmatch '--type=' }).Count"],
-  { env: { ...powershellEnv(), WORKBENCH_UPDATE_EXE: executable, WORKBENCH_UPDATE_PID: String(pid) }, windowsHide: true, timeout: 20000 })
+  { env: { ...powershellEnv(), WORKBENCH_UPDATE_EXE: executable, WORKBENCH_UPDATE_PID: String(pid) }, windowsHide: true, timeout: 120000 })
   if (stdout.trim() !== '0') throw new Error('Active agent connections are using Workbench. Finish those agent sessions before installing the update.')
 }
 
@@ -72,7 +75,7 @@ export async function launchWindowsInstaller(config: WindowsInstallerConfig): Pr
   // hidden process instead; its console and lifetime do not belong to Node.
   const { stdout } = await promisify(execFile)(powershellPath(), ['-NoProfile', '-NonInteractive', '-Command',
     "$ErrorActionPreference='Stop'; $child=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -WindowStyle Hidden -ArgumentList ('-NoProfile -NonInteractive -EncodedCommand ' + $env:WORKBENCH_UPDATE_SCRIPT) -PassThru; $child.Id"],
-  { windowsHide: true, timeout: 20000, env: { ...env, WORKBENCH_UPDATE_CONFIG: configFile, WORKBENCH_UPDATE_SCRIPT: Buffer.from(WINDOWS_INSTALL_SCRIPT, 'utf16le').toString('base64') } })
+  { windowsHide: true, timeout: 120000, env: { ...env, WORKBENCH_UPDATE_CONFIG: configFile, WORKBENCH_UPDATE_SCRIPT: Buffer.from(WINDOWS_INSTALL_SCRIPT, 'utf16le').toString('base64') } })
   const helperPid = Number(stdout.trim())
   if (!Number.isSafeInteger(helperPid) || helperPid <= 0) throw new Error('The Windows update helper could not start. Try installing again.')
   const deadline = Date.now() + 60000

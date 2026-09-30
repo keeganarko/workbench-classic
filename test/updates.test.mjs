@@ -223,7 +223,7 @@ test('draft and recipient scope survive restart without sending; corrupt storage
   saved = JSON.stringify({ ...state, composerTargets: [] }); assert.equal(loadComposerWorkspace(), null)
   delete globalThis.localStorage
 })
-test('native Windows process guard refuses a running Node bridge without terminating it', { skip: process.platform !== 'win32' }, async () => {
+test('native Windows process guard refuses a running Node bridge without terminating it', { skip: process.platform !== 'win32', timeout: 300000 }, async () => {
   // This test process is the harmless bridge stand-in. Excluding an impossible
   // main PID leaves it visible, so the actual PowerShell query must refuse.
   await assert.rejects(() => requireNoWindowsAgentConnections(process.execPath, -1), /Active agent connections/)

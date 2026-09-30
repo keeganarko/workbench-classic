@@ -75,13 +75,13 @@ async function read(file) {
   try { return await fs.readFile(file, 'utf8') } catch (error) { if (error.code !== 'ENOENT') throw error; return '' }
 }
 
-test('native Windows installer handoff waits, verifies, protects bridges, and relaunches', { skip: process.platform !== 'win32', timeout: 180000 }, async (t) => {
+test('native Windows installer handoff waits, verifies, protects bridges, and relaunches', { skip: process.platform !== 'win32', timeout: 600000 }, async (t) => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'workbench-helper-test-'))
   t.after(() => fs.rm(root, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 }))
   const fixture = path.join(root, 'fixture.exe')
   await promisify(execFile)(powershellPath(), ['-NoProfile', '-NonInteractive', '-Command',
     "$ErrorActionPreference='Stop'; Add-Type -TypeDefinition $env:WORKBENCH_TEST_SOURCE -OutputAssembly $env:WORKBENCH_TEST_OUTPUT -OutputType ConsoleApplication"],
-  { env: { ...powershellEnv(), WORKBENCH_TEST_SOURCE: fixtureSource, WORKBENCH_TEST_OUTPUT: fixture }, windowsHide: true, timeout: 30000 })
+  { env: { ...powershellEnv(), WORKBENCH_TEST_SOURCE: fixtureSource, WORKBENCH_TEST_OUTPUT: fixture }, windowsHide: true, timeout: 120000 })
 
   async function makeCase(t) {
     const folder = await fs.mkdtemp(path.join(root, 'case-'))
@@ -159,7 +159,7 @@ test('native Windows installer handoff waits, verifies, protects bridges, and re
     const moduleURL = new URL('../src/main/updateWindows.ts', import.meta.url).href
     await promisify(execFile)(process.execPath, ['--input-type=module', '-e',
       `const { launchWindowsInstaller } = await import(${JSON.stringify(moduleURL)}); await launchWindowsInstaller(JSON.parse(process.env.WORKBENCH_TEST_CONFIG));`],
-    { env: { ...process.env, WORKBENCH_TEST_CONFIG: JSON.stringify(c.config) }, windowsHide: true, timeout: 30000 })
+    { env: { ...process.env, WORKBENCH_TEST_CONFIG: JSON.stringify(c.config) }, windowsHide: true, timeout: 120000 })
     assert.equal(await c.command(), '')
     await c.closeParent()
     await until(c.relaunched, 'relaunch after launcher Node exits')
@@ -171,7 +171,7 @@ test('native Windows installer handoff waits, verifies, protects bridges, and re
     const configFile = path.join(c.config.directory, 'install.json')
     await fs.writeFile(configFile, JSON.stringify({ ...c.config, token }))
     const running = promisify(execFile)(powershellPath(), ['-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from(WINDOWS_INSTALL_SCRIPT, 'utf16le').toString('base64')],
-      { env: { ...powershellEnv(), WORKBENCH_UPDATE_CONFIG: configFile }, windowsHide: true, timeout: 30000 })
+      { env: { ...powershellEnv(), WORKBENCH_UPDATE_CONFIG: configFile }, windowsHide: true, timeout: 120000 })
     await until(() => read(path.join(c.config.directory, 'install-ready.json')), 'unacknowledged readiness')
     await c.closeParent()
     await delay(500)
