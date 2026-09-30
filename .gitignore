@@ -1,0 +1,20 @@
+node_modules/
+out/
+release/
+dist/
+.DS_Store
+*.log
+*.tsbuildinfo
+
+# Local AI reports can contain selected project text or converted documents.
+# Keep generated evidence and demo bundles local unless deliberately exported.
+artifacts/ai/
+
+# Runtime state lives in ~/Library/Application Support/Workbench — never in the repo.
+# (session JSON, hook tokens, tmux.conf, generated shims)
+
+# The brain and the role definition. Local + private remote only, never this
+# public repo.
+vault/
+docs/agent-doctrine.md
+docs/cofounder-charter.md

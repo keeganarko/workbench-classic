@@ -1,0 +1,112 @@
+/*
+ * Project color lives on identity surfaces and navigation. Status colors keep
+ * their existing meanings, and the terminal host retains its own palette.
+ * Each accent has a light-shell shade so a chosen theme stays recognizable
+ * without washing out small text when the surrounding shell changes.
+ */
+.project-design { --project-color: var(--project-color-dark); }
+:root[data-prototype-theme='light'] .project-design { --project-color: var(--project-color-light); }
+.project-art { display: block; flex-shrink: 0; width: 100%; height: 100%; color: var(--project-color); }
+.px-projectmark.project-design { color: var(--project-color); background: color-mix(in srgb, var(--project-color) 13%, var(--px-panel)); }
+.px-projectmark .project-art { width: 87%; height: 87%; }
+.px-projectmark .project-name-art { width: 70%; height: 70%; }
+/* The same named filters sit above every workspace view. A single scrollable
+ * row keeps large portfolios from pushing the terminal below the window, and
+ * native buttons keep focus navigation and voice activation predictable. */
+.project-filter { display: flex; align-items: center; gap: 12px; margin: 12px 32px; min-width: 0; flex-shrink: 0; }
+.project-filter-label { font-size: 10px; color: var(--fg-muted); }
+.project-filter-options { display: flex; gap: 6px; min-width: 0; overflow-x: auto; padding: 3px; scrollbar-width: thin; }
+.project-filter-options button { display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0; max-width: 240px; padding: 5px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-app); color: var(--fg-muted); font-size: 11px; }
+.project-filter-options button > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.project-filter-options button:hover { background: var(--bg-hover); color: var(--fg-strong); }
+.project-filter-options button[aria-pressed='true'] { color: var(--fg-strong); border-color: var(--project-color, var(--fg-muted)); background: var(--bg-hover); }
+.project-filter-options button:focus-visible { outline: 2px solid var(--fg-strong); outline-offset: 1px; }
+.project-filter .px-projectmark { width: 23px; height: 23px; }
+.project-select { position: relative; display: flex; align-items: center; min-width: 0; width: 100%; }
+.project-select > .px-projectmark, .project-select > svg { position: absolute; left: 9px; pointer-events: none; z-index: 1; }
+.project-select .px-projectmark { width: 22px; height: 22px; }
+.project-select select { width: 100%; min-width: 0; padding-left: 39px; }
+.px-sessionactions .project-select select { padding-left: 39px; }
+.section__header .px-projectmark { width: 22px; height: 22px; }
+@media (max-width: 1200px) { .project-filter { margin-left: 23px; margin-right: 23px; } }
+@media (max-width: 700px) { .project-filter { margin-left: 14px; margin-right: 14px; gap: 6px; } .project-filter-label { display: none; } }
+.px-projectnav .px-nav.project-design.is-active { box-shadow: inset 2px 0 var(--project-color); background: color-mix(in srgb, var(--project-color) 9%, var(--bg-sidebar)); }
+.px-content.project-design { --accent: var(--project-color); --accent-hover: color-mix(in srgb, var(--project-color) 85%, var(--fg-strong)); --accent-ink: var(--bg-app); }
+.px-headingcopy { display: flex; align-items: center; gap: 20px; min-width: 0; }
+.px-headingcopy > div { min-width: 0; }
+.px-headingcopy h1 { overflow-wrap: anywhere; }
+.px-headingart { width: 88px; height: 88px; }
+.px-heading-small .px-headingart { width: 56px; height: 56px; }
+.px-projecttile { position: relative; min-width: 0; }
+.px-projecttile:hover { border-color: color-mix(in srgb, var(--project-color) 60%, var(--border)); }
+.px-projecttile .px-projectcard { display: block; width: 100%; height: 100%; border: 0; border-radius: 10px; background: none; }
+.px-projecttile .px-projectcard:focus-visible { outline-offset: -4px; }
+.px-projectcard-cover { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; height: 74px; margin: -4px 0 17px; padding-right: 16px; }
+.px-projectcard-cover .px-projectmark { margin: 0; }
+.px-projectcard-cover > .project-art { width: 86px; height: 86px; }
+.px-projectcard h3, .px-projectcard p { overflow-wrap: anywhere; }
+.px-projectedit { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; padding: 7px; border: 0; border-radius: 6px; background: transparent; color: var(--fg-muted); }
+.px-projectedit:hover { color: var(--project-color); background: var(--bg-hover); }
+
+/* The body scrolls independently so Save and Cancel stay reachable on a short
+ * window, including when the optional drawing pad is expanded. */
+.project-dialog-overlay { padding: 20px 0; align-items: center; }
+.project-dialog { width: 540px; max-width: calc(100vw - 32px); max-height: calc(100dvh - 40px); display: flex; flex-direction: column; }
+.project-dialog .modal__head, .project-dialog .modal__foot { flex-shrink: 0; }
+.project-dialog .modal__body { overflow-y: auto; min-height: 0; max-height: none; }
+.project-dialog .modal__foot { flex-wrap: wrap; }
+.project-dialog-fields { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: 18px; }
+.project-dialog-fields > .field { margin: 0; }
+.project-dialog-fields > .field .field__row input { min-width: 0; }
+.project-dialog-fields:disabled { opacity: .65; }
+.project-designer { border-top: 1px solid var(--border); padding-top: 18px; display: grid; gap: 17px; min-width: 0; }
+.project-design-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.project-design-label strong { font-size: 12px; font-weight: 550; color: var(--fg-strong); }
+.project-design-label button { padding: 3px 0; border: 0; background: none; color: var(--fg-muted); font-size: 11px; }
+.project-design-label button:hover { color: var(--fg-strong); }
+.project-design-preview { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 148px; padding: 20px 24px; border: 1px solid var(--border); border-left: 3px solid var(--project-color); border-radius: 10px; background: color-mix(in srgb, var(--project-color) 4%, var(--bg-app)); }
+.project-design-preview > div { min-width: 0; flex: 1; }
+.project-design-preview .px-projectmark { width: 30px; height: 30px; margin-bottom: 12px; }
+.project-design-preview strong { display: block; color: var(--fg-strong); font-size: 17px; font-weight: 550; overflow-wrap: anywhere; }
+.project-design-preview small { display: block; margin-top: 5px; color: var(--fg-muted); font-size: 10px; line-height: 1.6; }
+.project-design-preview > .project-art { width: 116px; height: 116px; }
+.project-design-preview-label { position: absolute; top: 10px; right: 12px; color: var(--fg-dim); font-size: 7px; letter-spacing: 1.3px; }
+.project-design-options { min-width: 0; border: 0; padding: 0; margin: 0; }
+.project-design-options legend { padding: 0; margin-bottom: 9px; color: var(--fg-muted); font-size: 11px; }
+.project-theme-options { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.project-theme-option { padding: 8px 5px; display: grid; justify-items: center; gap: 6px; background: var(--bg-app); border: 1px solid var(--border); border-radius: 8px; color: var(--fg-muted); font-size: 10px; }
+.project-theme-option > span { display: grid; place-items: center; width: 38px; height: 32px; color: var(--project-color); }
+.project-theme-option .project-art { width: 36px; height: 36px; }
+.project-ink-dot { width: 13px; height: 13px; border-radius: 50%; background: currentColor; }
+.project-theme-option[aria-pressed='true'] { border-color: var(--project-color); background: color-mix(in srgb, var(--project-color) 8%, var(--bg-app)); color: var(--fg-strong); }
+.project-theme-option:hover { border-color: var(--project-color); }
+.project-color-options { display: flex; flex-wrap: wrap; gap: 10px; }
+.project-color-option { display: grid; place-items: center; width: 34px; height: 34px; padding: 4px; border: 1px solid transparent; border-radius: 50%; background: transparent; }
+.project-color-option > span { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; color: var(--bg-app); background: var(--project-color); font-weight: 700; font-size: 13px; }
+.project-color-option[aria-pressed='true'], .project-color-option:hover { border-color: var(--project-color); }
+.project-art-options { display: flex; flex-wrap: wrap; gap: 6px; }
+.project-art-options button, .project-sketch-help button { border: 1px solid var(--border); border-radius: 6px; background: none; color: var(--fg-muted); padding: 6px 11px; font-size: 11px; }
+.project-art-options button[aria-pressed='true'] { color: var(--fg-strong); border-color: var(--fg-muted); background: var(--bg-hover); }
+.project-art-options button:hover, .project-sketch-help button:hover:not(:disabled) { color: var(--fg-strong); border-color: var(--border-strong); }
+.project-sketch { display: flex; gap: 18px; align-items: center; }
+.project-sketch-pad { flex-shrink: 0; width: 162px; height: 162px; border: 1px solid var(--border-strong); border-radius: 8px; overflow: hidden; background: var(--bg-app); }
+.project-sketch-pad svg { display: block; color: var(--project-color); cursor: crosshair; touch-action: none; user-select: none; }
+.project-sketch-help { min-width: 0; }
+.project-sketch-help strong { font-size: 11px; font-weight: 550; color: var(--fg); }
+.project-sketch-help p { font-size: 11px; color: var(--fg-muted); line-height: 1.7; margin: 8px 0 12px; }
+.project-sketch-help > div { display: flex; gap: 7px; }
+.project-sketch-help small { display: block; margin-top: 12px; font-size: 10px; color: var(--fg-muted); line-height: 1.6; }
+.project-sketch-help button:disabled { opacity: .4; cursor: default; }
+@media (max-width: 950px) {
+  .px-headingactions .px-button.px-designproject { display: inline-flex; }
+  .px-heading { flex-wrap: wrap; gap: 12px; }
+  .px-headingactions { padding-top: 0; }
+  .px-headingart { width: 58px; height: 58px; }
+  .px-headingcopy { gap: 12px; }
+}
+@media (max-width: 480px) {
+  .project-sketch { flex-direction: column; align-items: flex-start; }
+  .project-design-preview { padding: 18px 14px; }
+  .project-design-preview > .project-art { width: 80px; height: 80px; }
+  .project-theme-options { gap: 5px; }
+}

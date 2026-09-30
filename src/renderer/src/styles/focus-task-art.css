@@ -1,0 +1,19 @@
+/* Subject colors belong to the illustration, not to the status engine. Keep
+   the paper/light/shadow contrast inside the scene identical in either shell. */
+.focus-art { --art-accent: #7fafa2; --art-mid: #b2c8cf; --art-warm: #e4bd80; width: 100%; overflow: hidden; background: #e8ece8; position: relative; }
+.focus-art svg { display: block; width: 100%; height: 178px; }
+.focus-art--finance { --art-accent: #6c9c83; --art-mid: #a8c9b8; --art-warm: #e7bd66; }
+.focus-art--design { --art-accent: #9c8fb6; --art-mid: #c0b9d0; --art-warm: #e8af8c; }
+.focus-art--security { --art-accent: #789da8; --art-mid: #a6c3c7; --art-warm: #d9b778; }
+.focus-art--writing { --art-accent: #bf887b; --art-mid: #d7b4a5; --art-warm: #e5bf8b; }
+.focus-art--knowledge { --art-accent: #839fbc; --art-mid: #b5c9d8; --art-warm: #e0b786; }
+.fa-shadow { fill: #647d7330; }.fa-backdrop { fill: #dbe3db; }
+.fa-paper { fill: #fffbeb; }.fa-mid { fill: var(--art-mid); }.fa-accent { fill: var(--art-accent); }.fa-warm { fill: var(--art-warm); }.fa-leaf { fill: #8aab8a; }
+.fa-line, .fa-decoration { stroke: #485e60; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; fill: none; }
+.focus-art-label { display: block; color: #405650; font-size: 10px; font-weight: 600; letter-spacing: .15px; text-align: center; padding: 0 12px 14px; }
+.focus-visual:has(.focus-art) { padding: 0; gap: 0; background: var(--px-panel); }
+.focus-visual:has(.focus-art) .focus-visual-caption { padding: 9px 12px; border-top: 1px solid var(--border); text-align: center; }
+.focus-visual:has(.focus-art) .focus-steps, .focus-visual:has(.focus-art) .focus-metrics { width: 100%; box-sizing: border-box; padding: 15px 17px; }
+.focus-visual:has(.focus-art) .focus-metrics { gap: 12px; }.focus-visual:has(.focus-art) .focus-metrics strong { font-size: 21px; }
+.focus-board--compact .focus-art svg { height: 120px; }
+.focus-board--compact .focus-art-label { padding-bottom: 10px; }

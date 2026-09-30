@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "include": ["README.md", "docs", "src"],
+  "exclude": ["docs/history", "docs/media"],
+  "extensions": [".md", ".ts", ".tsx", ".css"],
+  "respectGitIgnore": true,
+  "maxFileBytes": 524288,
+  "maxChunks": 5000,
+  "chunkChars": 1800,
+  "ollamaUrl": "http://127.0.0.1:11435",
+  "embeddingModel": "qwen3-embedding:0.6b",
+  "chatModel": "qwen3.5:4b"
+}

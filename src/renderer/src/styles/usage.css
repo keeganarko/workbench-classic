@@ -1,0 +1,54 @@
+/* A dedicated footer keeps both providers visible when the status bar has a
+   long project path. It uses the shell's neutral tokens in either theme. */
+.usage-meter { position: relative; flex: 0 0 auto; border-top: 1px solid var(--border); background: var(--bg-sidebar); color: var(--fg); font-size: 11px; }
+.usage-meter__summary { display: flex; align-items: center; gap: 22px; width: 100%; padding: 9px 16px; border: 0; background: none; color: inherit; text-align: left; font: inherit; }
+.usage-meter__summary:hover { background: var(--bg-hover); }
+.usage-meter__caption { font-weight: 600; color: var(--fg-strong); }
+.usage-meter__caption small { display: block; font-size: 9px; color: var(--fg-dim); font-weight: 400; }
+.usage-meter__compact { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.usage-meter__compact + .usage-meter__compact { padding-left: 22px; border-left: 1px solid var(--border); }
+.usage-meter__identity { display: inline-flex; flex-direction: column; gap: 2px; min-width: 53px; }
+.usage-meter__identity strong { font-weight: 600; }
+.usage-meter .usage-meter__identity small { font-size: 9px; line-height: 1.2; }
+.usage-meter .usage-meter__hint--stale { color: var(--status-waiting); }
+.usage-meter__reading { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-muted); font-variant-numeric: tabular-nums; }
+.usage-meter__reading strong { min-width: 48px; font-size: 10px; font-weight: 500; white-space: nowrap; }
+.usage-meter__mini { width: 44px; height: 4px; background: var(--border); border-radius: 5px; overflow: hidden; }
+.usage-meter__mini > span, .usage-meter__track > span { display: block; height: 100%; background: var(--fg-muted); border-radius: inherit; }
+.usage-meter .is-warning > span { background: var(--status-waiting); }
+.usage-meter .is-critical > span { background: var(--status-failed); }
+.usage-meter__details-label { margin-left: auto; color: var(--fg-dim); white-space: nowrap; }
+.usage-meter__panel { position: absolute; bottom: calc(100% + 8px); left: 12px; width: min(640px, calc(100vw - 24px)); max-height: calc(100vh - 120px); overflow: auto; z-index: 60; padding: 18px; box-sizing: border-box; background: var(--bg-elevated); border: 1px solid var(--border-strong); border-radius: 12px; box-shadow: var(--shadow-overlay); outline: none; }
+.usage-meter__head { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; font-size: 13px; }
+.usage-meter__head > strong { flex: 1; }
+.usage-meter__head button { color: var(--fg); background: transparent; border: 1px solid var(--border); border-radius: 6px; padding: 4px 9px; font: inherit; font-size: 11px; }
+.usage-meter__head button:hover { background: var(--bg-hover); }
+.usage-meter__head button:disabled { opacity: .6; }
+.usage-meter__providers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.usage-meter__provider { min-width: 0; }
+.usage-meter__provider > header { display: flex; flex-direction: column; gap: 5px; margin-bottom: 18px; }
+.usage-meter__provider > header strong { font-size: 15px; }
+.usage-meter__provider > header span, .usage-meter small, .usage-meter__hint { color: var(--fg-dim); font-size: 10px; line-height: 1.6; }
+.usage-meter__limit { margin: 0 0 16px; }
+.usage-meter__limit > div:first-child, .usage-meter__tokens > div { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.usage-meter__limit strong, .usage-meter__tokens strong { font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.usage-meter__track { height: 5px; border-radius: 5px; background: var(--border); overflow: hidden; margin-bottom: 4px; }
+.usage-meter__tokens { border-top: 1px solid var(--border); padding-top: 11px; margin-top: 12px; }
+.usage-meter__note { font-size: 10px; color: var(--fg-dim); line-height: 1.6; margin: 16px 0 0; }
+.usage-meter__note + .usage-meter__note { margin-top: 7px; }
+@media (max-width: 900px) {
+  .usage-meter__summary { gap: 14px; }
+  .usage-meter__compact { gap: 10px; }
+  .usage-meter__compact + .usage-meter__compact { padding-left: 14px; }
+  .usage-meter__mini { width: 24px; }
+  .usage-meter__caption, .usage-meter__details-label { display: none; }
+  .usage-meter__summary { justify-content: space-around; }
+}
+@media (max-width: 680px) {
+  .usage-meter__caption, .usage-meter__mini, .usage-meter__details-label { display: none; }
+  .usage-meter__summary { justify-content: space-around; padding: 9px; gap: 8px; }
+  .usage-meter__compact { gap: 8px; flex-wrap: wrap; }
+  .usage-meter__identity { width: 100%; }
+  .usage-meter__compact + .usage-meter__compact { padding-left: 10px; }
+  .usage-meter__providers { grid-template-columns: 1fr; gap: 20px; }
+}

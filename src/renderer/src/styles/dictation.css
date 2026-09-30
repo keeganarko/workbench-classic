@@ -1,0 +1,31 @@
+/* The helper stays beside the real draft. There is no second editor whose
+ * selection or text could diverge while a desktop dictation tool is pasting. */
+.dictation-panel { margin: 8px 0; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-elevated); color: var(--fg); font: 12px/1.55 var(--font-ui); }
+.dictation-panel p { margin: 8px 0; }
+.dictation-panel__head { display: flex; align-items: center; gap: 10px; }
+.dictation-panel__head > button { margin-left: auto; }
+.dictation-panel__status { color: var(--fg-dim); font-size: 11px; }
+.dictation-panel__actions { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin: 10px 0; }
+.dictation-panel__note { color: var(--fg-dim); font-size: 11px; }
+.dictation-reference { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 8px 0; border-top: 1px solid var(--border); }
+.dictation-reference > span:first-child { flex-basis: 100%; }
+.dictation-reference__file { max-width: 100%; overflow-wrap: anywhere; text-align: left; border: 1px solid var(--border); border-radius: 5px; background: var(--bg-input); color: var(--fg); padding: 5px 8px; cursor: pointer; font: 11px/1.5 var(--font-mono); }
+.dictation-reference__file:hover { border-color: var(--fg-muted); }
+.dictation-reference__file:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.composer__dictate { align-self: flex-end; min-height: 32px; white-space: nowrap; }
+.composer__dictate[aria-expanded='true'] { border-color: var(--fg-muted); background: var(--bg-elevated); }
+.flow-settings { font-size: 12px; line-height: 1.6; }
+.flow-settings h3 { font-size: 17px; margin: 18px 0 8px; }
+.flow-settings__status { display: flex; flex-direction: column; gap: 5px; padding: 12px; margin: 14px 0; border: 1px solid var(--border); border-radius: 7px; }
+.flow-settings__status span { color: var(--fg-muted); }
+.flow-settings li { margin: 8px 0; }
+.flow-settings__toggle { display: flex; gap: 8px; align-items: center; margin-top: 18px; }
+.flow-settings details { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+.flow-settings summary { cursor: pointer; font-weight: 600; }
+.flow-settings__card { border: 1px solid var(--border); border-radius: 7px; padding: 12px; margin: 10px 0; }
+.flow-settings__card-head { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
+.flow-settings__card-head > div { display: flex; flex-direction: column; gap: 4px; }
+.flow-settings__card-head span { color: var(--fg-muted); }
+.flow-settings__setup { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.flow-settings__setup-label { margin: 8px 0 0; font-weight: 600; }
+.flow-settings__setup kbd, .flow-settings__setup code { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; padding: 1px 5px; border: 1px solid var(--border); border-radius: 4px; }

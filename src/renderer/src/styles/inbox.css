@@ -1,0 +1,51 @@
+/* Quiet update cards keep actual input requests distinguishable from routine
+ * completed turns. Shared theme tokens preserve that hierarchy in both shells.
+ */
+.inbox-view { display: grid; gap: 27px; max-width: 1140px; margin: 0 auto; }
+.inbox-summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 17px 19px; border: 1px solid var(--border); border-radius: 10px; background: var(--px-panel); }
+.inbox-summary__copy { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.inbox-summary__copy > svg { flex-shrink: 0; margin-top: 1px; color: var(--fg-muted); }
+.inbox-summary strong { display: block; font-size: 13px; font-weight: 550; color: var(--fg-strong); }
+.inbox-summary p { margin: 5px 0 0; font-size: 11px; color: var(--fg-muted); line-height: 1.6; }
+.inbox-summary__count { flex-shrink: 0; font-size: 10px; color: var(--fg-dim); padding: 5px 8px; border-radius: 5px; background: var(--px-wash); }
+.inbox-group { --inbox-tone: var(--status-review); min-width: 0; }
+.inbox-group--waiting { --inbox-tone: var(--status-waiting); }
+.inbox-group--failed { --inbox-tone: var(--status-failed); }
+.inbox-group__heading { margin-bottom: 12px; }
+.inbox-group__heading h2 { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--fg-strong); font-size: 13px; font-weight: 550; }
+.inbox-group__heading h2 > svg { color: var(--inbox-tone); }
+.inbox-group__heading h2 > span { color: var(--fg-dim); font-size: 10px; font-weight: 400; }
+.inbox-group__heading p { margin: 6px 0 0; color: var(--fg-muted); font-size: 11px; line-height: 1.6; }
+.inbox-group__items { display: grid; gap: 11px; }
+.inbox-card { border: 1px solid var(--border); border-left: 2px solid var(--inbox-tone); border-radius: 9px; background: var(--px-panel); min-width: 0; padding: 17px 19px 14px; }
+.inbox-card__header { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.inbox-card__header > div { min-width: 0; }
+.inbox-card__header strong { color: var(--fg-strong); font-weight: 550; font-size: 12px; overflow-wrap: anywhere; }
+.inbox-card__identity { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 4px; font-size: 10px; color: var(--fg-dim); overflow-wrap: anywhere; }
+.inbox-card__header time { font-size: 10px; color: var(--fg-dim); white-space: nowrap; padding-top: 1px; }
+.inbox-offline { padding: 1px 5px; border: 1px solid var(--border); border-radius: 4px; }
+.inbox-card__message { margin: 17px 0; }
+.inbox-card__message > span { color: var(--inbox-tone); font-size: 9px; font-weight: 550; }
+.inbox-card__message > p { margin: 6px 0 0; color: var(--fg); font-size: 12px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
+.inbox-card__message > .inbox-card__hint { color: var(--fg-muted); font-size: 10px; }
+.inbox-textbutton { display: inline-flex; align-items: center; gap: 4px; background: none; border: 0; border-radius: 4px; padding: 5px 3px; color: var(--fg-muted); font-size: 10px; }
+.inbox-textbutton:hover { color: var(--fg-strong); background: var(--bg-hover); }
+.inbox-textbutton:disabled { opacity: .5; cursor: wait; }
+.inbox-card__message > .inbox-textbutton { margin-top: 7px; }
+.inbox-card__footer { display: flex; flex-wrap: wrap; align-items: center; gap: 11px; border-top: 1px solid var(--border); padding-top: 12px; }
+.inbox-card__footer > .px-button { padding: 6px 9px; font-size: 10px; }
+.inbox-card__footer > span { margin-left: auto; font-size: 10px; color: var(--fg-dim); }
+.inbox-card__error { color: var(--status-failed); margin: 12px 0 0; font-size: 11px; overflow-wrap: anywhere; }
+.inbox-empty { padding: 35px 22px 42px; text-align: center; }
+.inbox-empty > span { display: inline-grid; place-items: center; width: 49px; height: 49px; border-radius: 13px; background: var(--px-wash); color: var(--status-review); }
+.inbox-empty h2 { margin: 17px 0 8px; font-size: 18px; font-weight: 500; letter-spacing: -.3px; color: var(--fg-strong); }
+.inbox-empty p { max-width: 390px; margin: 0 auto 19px; font-size: 12px; line-height: 1.8; color: var(--fg-muted); }
+.inbox-view button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 700px) {
+  .inbox-card { padding: 14px; }
+  .inbox-summary { padding: 14px; }
+  .inbox-card__footer > span { flex-basis: 100%; margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .inbox-view *, .inbox-view *::before, .inbox-view *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

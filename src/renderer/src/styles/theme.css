@@ -1,0 +1,4000 @@
+/*
+ * Workbench theme — tuned to match Cursor's chrome (which tracks VS Code's
+ * "Dark Modern"): same surface ladder, same 35px title bar, 48px activity bar,
+ * 22px status bar, and the same 1px #2b2b2b hairlines between regions.
+ */
+
+:root {
+  --bg-app: #181818;
+  --bg-editor: #1f1f1f;
+  --bg-sidebar: #181818;
+  --bg-activity: #181818;
+  --bg-elevated: #202020;
+  --bg-input: #313131;
+  --bg-hover: #2a2d2e;
+  --bg-selected: #04395e;
+  --bg-tab-active: #1f1f1f;
+  --bg-tab-inactive: #181818;
+
+  --border: #2b2b2b;
+  --border-strong: #3c3c3c;
+
+  --fg: #cccccc;
+  --fg-strong: #e7e7e7;
+  --fg-muted: #9d9d9d;
+  --fg-dim: #6e7681;
+
+  --accent: #0078d4;
+  --accent-hover: #026ec1;
+  /* Filled controls need their own ink: a light accent in the prototype must
+     use dark text, while selected rows still use the ordinary foreground. */
+  --accent-ink: #ffffff;
+  --danger-ink: #ffffff;
+
+  --status-waiting: #f14c4c;
+  --status-failed: #f85149;
+  --status-working: #e2b93d;
+  --status-review: #3fb950;
+  --status-idle: #6e7681;
+  --status-exited: #484f58;
+  /* Old names, kept so any stylesheet rule still using them keeps working. */
+  --status-running: var(--status-working);
+  --status-done: var(--status-review);
+
+  /* Agent colours are not variables any more: an agent's colour comes from its
+     registry row (`src/shared/agents.ts`), because the user can add agents and
+     a stylesheet cannot grow a variable at runtime. Set inline as a `style`. */
+
+  --titlebar-h: 35px;
+  --activity-w: 48px;
+  --statusbar-h: 22px;
+  --tabbar-h: 35px;
+
+  --font-ui:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, 'Helvetica Neue', sans-serif;
+  --font-mono: 'SF Mono', 'JetBrains Mono', Menlo, Monaco, 'Courier New', monospace;
+
+  --radius: 5px;
+  --shadow-overlay: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg-app);
+  color: var(--fg);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: default;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--fg);
+  background: var(--bg-input);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 5px 8px;
+  outline: none;
+  user-select: text;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #4f4f4f80;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6b6b6bc0;
+}
+
+/* ── app frame ─────────────────────────────────────────────────────────── */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.titlebar {
+  height: var(--titlebar-h);
+  min-height: var(--titlebar-h);
+  background: var(--bg-app);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding-left: 78px; /* clear the traffic lights */
+  padding-right: 8px;
+  gap: 8px;
+  -webkit-app-region: drag;
+}
+
+.titlebar__title {
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex: 1;
+  text-align: center;
+}
+
+/* No traffic lights to clear when the window is frameless — every platform
+   but macOS. The inset would otherwise read as a blank gap at the top left. */
+.titlebar--own-chrome {
+  padding-left: 8px;
+}
+
+.titlebar__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  -webkit-app-region: no-drag;
+}
+
+.window-controls {
+  display: flex;
+  align-self: stretch;
+  margin: 0 -8px 0 4px;
+}
+
+.window-control {
+  width: 46px;
+  display: grid;
+  place-items: center;
+  color: var(--fg-muted);
+}
+
+.window-control:hover {
+  color: var(--fg-strong);
+  background: #ffffff14;
+}
+
+.window-control--close:hover {
+  color: #fff;
+  background: #c42b1c;
+}
+
+.titlebar__counts {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  -webkit-app-region: no-drag;
+}
+
+.count-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: #ffffff08;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.count-chip:hover {
+  background: #ffffff14;
+}
+
+.count-chip--active {
+  background: #ffffff1c;
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+/* The strip only changes appearance when something is actually blocked, so a
+   change of appearance always means the same thing. Tinted rather than
+   animated: a pulse in the title bar of an app you leave open all day stops
+   being a signal and starts being an irritation. */
+.titlebar__counts--alert {
+  padding: 1px 4px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--status-waiting) 8%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--status-waiting) 30%, transparent);
+}
+
+.count-chip--go {
+  gap: 6px;
+  color: var(--fg-muted);
+}
+
+.titlebar__counts--alert .count-chip--go {
+  color: var(--fg-strong);
+  background: #ffffff14;
+}
+
+.count-chip__key {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 8px;
+}
+
+.dot--waiting {
+  background: var(--status-waiting);
+  box-shadow: 0 0 6px var(--status-waiting);
+}
+/* Failed reads as a hard stop, not a pulse: it is not going to change on its own. */
+.dot--failed {
+  background: var(--status-failed);
+  box-shadow: 0 0 6px var(--status-failed);
+}
+.dot--working {
+  background: var(--status-working);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.dot--review {
+  background: var(--status-review);
+}
+.dot--idle {
+  background: var(--status-idle);
+}
+.dot--exited {
+  background: var(--status-exited);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  /* anchor for the floating (unpinned) sidebar */
+  position: relative;
+}
+
+/* ── activity bar ──────────────────────────────────────────────────────── */
+
+.activitybar {
+  width: var(--activity-w);
+  min-width: var(--activity-w);
+  background: var(--bg-activity);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0;
+  gap: 2px;
+}
+
+.activitybar__item {
+  width: var(--activity-w);
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-dim);
+  position: relative;
+  transition: color 0.12s;
+}
+
+.activitybar__item:hover {
+  color: var(--fg);
+}
+
+.activitybar__item--active {
+  color: var(--fg-strong);
+}
+
+.activitybar__item--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--fg-strong);
+}
+
+.activitybar__badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--status-waiting);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Separates "which view" from "which sessions" — the two groups on the rail do
+   different things, and without the rule they read as one list of eight. */
+.activitybar__rule {
+  width: 22px;
+  height: 1px;
+  background: var(--border-strong);
+  margin: 5px 0;
+  flex: 0 0 auto;
+}
+
+.activitybar__spacer {
+  flex: 1;
+}
+
+/* ── sidebar ───────────────────────────────────────────────────────────── */
+
+.sidebar {
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+}
+
+.sidebar--floating {
+  position: absolute;
+  left: var(--activity-w);
+  top: 0;
+  bottom: 0;
+  z-index: 40;
+  box-shadow: var(--shadow-overlay);
+}
+
+/* unpinned: slides in over the main area when you hover the rail */
+.sidebar--floating {
+  transform: translateX(-102%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.14s ease,
+    opacity 0.14s ease;
+}
+
+.sidebar--peek {
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar__peek-strip {
+  position: absolute;
+  left: var(--activity-w);
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  z-index: 39;
+}
+
+.sidebar__resizer {
+  position: absolute;
+  right: -3px;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 5;
+}
+
+.sidebar__resizer:hover,
+.sidebar__resizer--active {
+  background: var(--accent);
+  opacity: 0.6;
+}
+
+/* logo block, top-left above the session list */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 12px 11px;
+  border-bottom: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+
+/* A flat, quiet tile. The old two-tone gradient was the loudest thing in the
+   window and it was decoration — the sidebar's job is to make status legible,
+   and nothing should out-shout a red dot. */
+.logo__mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+}
+
+.logo__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  min-width: 0;
+}
+
+.logo__name {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--fg-strong);
+  letter-spacing: -0.2px;
+}
+
+.logo__sub {
+  font-size: 10px;
+  color: var(--fg-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logo__spacer {
+  flex: 1;
+}
+
+.iconbtn {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-muted);
+  flex: 0 0 auto;
+}
+
+.iconbtn:hover {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.iconbtn--on {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.sidebar__scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 12px;
+}
+
+.sidebar__actions {
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: var(--radius);
+  background: var(--bg-input);
+  color: var(--fg);
+  font-size: 11.5px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: background 0.12s;
+}
+
+.btn:hover {
+  background: var(--bg-hover);
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.btn--primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--border-strong);
+}
+
+.btn--ghost:hover {
+  background: var(--bg-hover);
+}
+
+/* Reserved for a button that is one click from doing something outward-facing.
+   Nothing wears this at rest — it is what an armed confirmation turns into. */
+.btn--danger {
+  background: var(--status-failed);
+  color: var(--danger-ink);
+}
+
+.btn--danger:hover {
+  background: color-mix(in srgb, var(--status-failed) 90%, var(--danger-ink));
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* collapsible section, VS Code style */
+.section__header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  width: 100%;
+  position: sticky;
+  top: 0;
+  background: var(--bg-sidebar);
+  z-index: 2;
+}
+
+.section__header:hover {
+  color: var(--fg-strong);
+}
+
+.section__chevron {
+  width: 16px;
+  display: flex;
+  justify-content: center;
+  transition: transform 0.12s;
+  font-size: 9px;
+  color: var(--fg-muted);
+}
+
+.section__chevron--collapsed {
+  transform: rotate(-90deg);
+}
+
+/*
+ * A repository name is not a section label: it is content, often long, and
+ * often `owner/name`. Case and letter-spacing stay as written so `MyApp`
+ * reads as itself, and the middle truncates rather than the tail so the repo
+ * name survives when the owner has to go.
+ */
+.section__repo {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+  font-size: 11.5px;
+  color: var(--fg-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.section__tally {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 6px;
+  flex: 0 0 auto;
+}
+
+.section__tally-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fg-dim);
+}
+
+.sidebar__groupby {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px 6px;
+}
+
+.sidebar__new-project {
+  margin-left: auto;
+}
+
+.section__add {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-left: auto;
+}
+
+.section__add + .section__count {
+  margin-left: 0;
+}
+
+.section__count {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fg-dim);
+  background: #ffffff10;
+  border-radius: 9px;
+  padding: 1px 6px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.section__empty {
+  padding: 4px 8px 8px 28px;
+  font-size: 11px;
+  color: var(--fg-dim);
+  font-style: italic;
+}
+
+/* session row */
+.srow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 24px;
+  padding: 9px 8px 9px 10px;
+  font-size: 12.5px;
+  color: var(--fg);
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+}
+
+.srow:hover {
+  background: var(--bg-hover);
+}
+
+.srow--active {
+  background: var(--bg-selected);
+  color: var(--fg-strong);
+}
+
+.srow--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+}
+
+.srow__copy { flex: 1; min-width: 0; }
+.srow__title, .srow__about { display: block; white-space: normal; overflow-wrap: anywhere; line-height: 1.45; }
+.srow__about { margin-top: 4px; color: var(--fg-muted); font-size: 11px; }
+.srow__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 6px; font-size: 10px; color: var(--fg-dim); }
+
+/* The row's ⌘-digit. Same treatment as `.pane__num` on purpose: the two are
+   the app's only numbered jumps, and a shortcut you have to learn twice
+   because it looks different in two places is a shortcut nobody uses. Only
+   the first nine rows get one, so the column is narrow and mostly quiet. */
+.srow__num {
+  flex: 0 0 auto;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 3px;
+  border-radius: 3px;
+  background: #ffffff0d;
+  color: var(--fg-dim);
+  font-size: 9px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.srow--active .srow__num {
+  background: #ffffff1a;
+  color: var(--fg-strong);
+}
+
+.srow__agent {
+  /* The badge identifies the agent once; the adjacent title carries the job.
+     A slightly tighter label leaves more room for that purpose without
+     reducing the session row's hit target or changing its status colours. */
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  padding: 1px 3px;
+  border-radius: 3px;
+  flex: 0 0 auto;
+  opacity: 0.9;
+}
+
+.srow__badge {
+  font-size: 11px;
+  color: var(--fg-muted);
+  flex: 0 0 auto;
+}
+
+/* A document this chat produced that you have not looked at yet. Deliberately
+   quiet — it is an offer, not an alarm; the status dot is what shouts. */
+.srow__doc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.srow__pin {
+  opacity: 0;
+  font-size: 10px;
+}
+
+.srow:hover .srow__pin,
+.srow__pin--on {
+  opacity: 1;
+}
+
+/* Hidden until hover, like the pin. It kills a session, so it must not sit
+   permanently under the cursor's resting path. */
+.srow__close {
+  opacity: 0;
+  font-size: 10px;
+}
+
+.srow:hover .srow__close {
+  opacity: 1;
+}
+
+.srow__close:hover {
+  color: var(--status-failed, #e5534b);
+}
+
+.srow__reason {
+  font-size: 10.5px;
+  color: var(--status-waiting);
+  padding: 0 8px 4px 27px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: -2px;
+}
+
+.srow__reason--failed {
+  color: var(--status-failed);
+}
+
+/* lineage indent guide for forked sessions */
+.srow__indent {
+  flex: 0 0 auto;
+  border-left: 1px solid var(--border-strong);
+  height: 100%;
+  margin-right: 2px;
+}
+
+/* ── main area ─────────────────────────────────────────────────────────── */
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-editor);
+}
+
+.tabbar {
+  flex: 0 0 auto;
+  min-height: var(--tabbar-h);
+  background: var(--bg-tab-inactive);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.tabbar::-webkit-scrollbar {
+  height: 3px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  min-width: 120px;
+  max-width: 220px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-tab-inactive);
+  color: var(--fg-muted);
+  font-size: 12.5px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.tab:hover {
+  background: #1f1f1f;
+}
+
+.tab--active {
+  background: var(--bg-tab-active);
+  color: var(--fg-strong);
+}
+
+.tab--active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--accent);
+}
+
+.tab__title {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+.tab__close {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  opacity: 0;
+  color: var(--fg-muted);
+}
+
+.tab:hover .tab__close,
+.tab--active .tab__close {
+  opacity: 1;
+}
+
+.tab__close:hover {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.tabbar__new {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  color: var(--fg-muted);
+  flex: 0 0 auto;
+}
+
+.tabbar__new:hover {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.tabbar__spacer {
+  flex: 1 1 auto;
+  min-width: 12px;
+}
+
+.presets {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px 0 4px;
+  flex: 0 0 auto;
+  /* The tab strip scrolls; the presets must not scroll off with it. */
+  position: sticky;
+  right: 0;
+  background: var(--bg-tab-inactive);
+}
+
+.presets__btn {
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--fg-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.presets__btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.presets__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ── minimized sessions ────────────────────────────────────────────────── */
+
+.minbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: var(--bg-app);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  flex: 0 0 auto;
+}
+
+.minbar::-webkit-scrollbar {
+  height: 3px;
+}
+
+.minbar__label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg-muted);
+  flex: 0 0 auto;
+  opacity: 0.7;
+}
+
+.minbar__chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 7px;
+  max-width: 210px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg-tab-inactive);
+  color: var(--fg-muted);
+  font-size: 11.5px;
+  flex: 0 0 auto;
+}
+
+.minbar__chip:hover {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.minbar__agent {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.minbar__title {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+/* ── pane grid ─────────────────────────────────────────────────────────── */
+
+.grid {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  position: relative;
+}
+
+.split {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.split--h {
+  flex-direction: row;
+}
+
+.split--v {
+  flex-direction: column;
+}
+
+.split__child {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.splitter {
+  flex: 0 0 4px;
+  background: transparent;
+  position: relative;
+  z-index: 3;
+}
+
+.splitter--h {
+  cursor: col-resize;
+}
+
+.splitter--v {
+  cursor: row-resize;
+}
+
+.splitter::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  transition: background 0.12s;
+}
+
+.splitter:hover::after,
+.splitter--active::after {
+  background: var(--accent);
+}
+
+/* ── pane ──────────────────────────────────────────────────────────────── */
+
+.pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-editor);
+  border: 1px solid transparent;
+  position: relative;
+}
+
+.pane--focused {
+  border-color: #ffffff14;
+}
+
+.pane__header {
+  flex: 0 0 auto;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 6px 5px 9px;
+  background: var(--bg-app);
+  border-bottom: 1px solid var(--border);
+  font-size: 11.5px;
+  color: var(--fg-muted);
+}
+
+.pane--focused .pane__header {
+  background: #202020;
+  color: var(--fg);
+}
+
+/* The pane's number, which is also its shortcut. Dim until the pane is
+   focused, so a wall of panes does not read as a wall of digits. */
+.pane__num {
+  flex: 0 0 auto;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 3px;
+  background: #ffffff0d;
+  color: var(--fg-muted);
+  font-size: 9.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.55;
+}
+
+.pane--focused .pane__num {
+  opacity: 1;
+  background: #ffffff1a;
+  color: var(--fg-strong);
+}
+
+.pane__title {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+.pane__status {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-weight: 600;
+}
+
+.pane__mode {
+  flex: 0 0 auto;
+  padding: 1px 5px;
+  border: 1px solid #8b5cf64d;
+  border-radius: 999px;
+  color: #b8a5ff;
+  background: #8b5cf612;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pane__term {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  padding: 4px 0 0 6px;
+  overflow: hidden;
+}
+
+.pane__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--fg-dim);
+  font-size: 12.5px;
+}
+
+.pane__empty-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.pane__empty-hints {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 14px;
+  font-size: 11px;
+  color: var(--fg-dim);
+}
+
+.pane__empty-hints kbd {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  background: #ffffff0d;
+  border-radius: 3px;
+  padding: 1px 4px;
+  margin-right: 4px;
+}
+
+/* ── pane footer ───────────────────────────────────────────────────────── */
+
+/* Mirrors the header's height and hairline so a pane reads as one object with
+   a top and a bottom, rather than a terminal with two unrelated strips. */
+.pane__footer {
+  height: 22px;
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 9px;
+  background: var(--bg-app);
+  border-top: 1px solid var(--border);
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.pane--focused .pane__footer {
+  background: #202020;
+}
+
+.pane__footer-item {
+  flex: 0 0 auto;
+}
+
+.pane__footer-item--dim {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 0 1 auto;
+}
+
+/* Amber, not red: running unsupervised is a state you chose, not a fault. It
+   still has to be the one thing on this line you cannot miss. */
+.pane__footer-item--warn {
+  color: var(--status-working);
+  font-weight: 600;
+}
+
+/* The one item on this line that does something. Everything else here states
+   a fact about the session; this offers to open a page. */
+.pane__footer-item--link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: 0 0 auto;
+  padding: 0 5px;
+  height: 15px;
+  border: 0;
+  border-radius: 4px;
+  font: inherit;
+  cursor: pointer;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.pane__footer-item--link:hover {
+  color: var(--accent-ink);
+  background: var(--accent);
+}
+
+.pane__footer-spacer {
+  flex: 1 1 auto;
+}
+
+.pane__banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  font-size: 11.5px;
+  background: color-mix(in srgb, var(--status-waiting) 8%, var(--bg-editor));
+  border-bottom: 1px solid color-mix(in srgb, var(--status-waiting) 30%, transparent);
+  color: var(--status-waiting);
+}
+
+.pane__banner--exited {
+  background: #48505810;
+  border-bottom-color: var(--border);
+  color: var(--fg-muted);
+}
+
+/* Distinct from the waiting banner on purpose — a crash and a question should
+   not look the same in peripheral vision. */
+.pane__banner--failed {
+  background: color-mix(in srgb, var(--status-failed) 8%, var(--bg-editor));
+  border-bottom-color: color-mix(in srgb, var(--status-failed) 30%, transparent);
+  color: var(--status-failed);
+}
+
+/* ── attachment drop target ────────────────────────────────────────────── */
+
+/* The pane keeps its own layout while a drag is over it; the affordance is an
+   overlay so nothing reflows and the terminal underneath stays readable. */
+.pane--dropping {
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+}
+
+.pane__drop {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  font-size: 12px;
+  color: var(--fg);
+  background: #1f1f1fe6;
+  border-top: 1px solid var(--accent);
+  pointer-events: none;
+}
+
+.composer--dropping {
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+}
+
+/* ── composer ──────────────────────────────────────────────────────────── */
+
+.composer {
+  border-top: 1px solid var(--border);
+  background: var(--bg-app);
+  padding: 7px 10px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.composer__targets {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--fg-muted);
+  flex-wrap: wrap;
+}
+
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 11px;
+  border: 1px solid var(--border-strong);
+  font-size: 11px;
+  color: var(--fg-muted);
+  background: transparent;
+  transition: all 0.12s;
+}
+
+.chip:hover {
+  border-color: var(--fg-dim);
+  color: var(--fg);
+}
+
+.chip--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.composer__row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.composer__input {
+  flex: 1;
+  min-height: 34px;
+  max-height: 180px;
+  resize: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  font-family: var(--font-ui);
+}
+
+.composer__send {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  font-size: 12px;
+  flex: 0 0 auto;
+}
+
+.composer__send:hover {
+  background: var(--accent-hover);
+}
+
+.composer__send:disabled {
+  background: var(--bg-input);
+  color: var(--fg-dim);
+  cursor: not-allowed;
+}
+
+.composer__hint {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+}
+
+/* Replaces the key hints when there is a typed prompt that cannot go anywhere.
+   The hints are for when things work; this line is the only thing worth
+   reading when they do not. */
+.composer__hint--blocked {
+  color: var(--status-working);
+}
+
+/* The bar is a click target in its own right — see the mousedown handler in
+   Composer.tsx — so it should look like one rather than like dead chrome. */
+.composer {
+  cursor: text;
+}
+
+.composer .chip,
+.composer button {
+  cursor: pointer;
+}
+
+/* ── visual pane ───────────────────────────────────────────────────────── */
+
+/*
+ * A visual pane is still a `.pane`; only its interior changes. The canvas is
+ * deliberately more chromatic than the app chrome, but all controls keep the
+ * same mono type, hairlines and compact scale so it reads as a Workbench mode
+ * rather than a web page pasted into the layout.
+ */
+.visual-pane {
+  --visual-violet: #8b5cf6;
+  --visual-cyan: #22d3ee;
+  --visual-rose: #ec4899;
+  background: #090b12;
+}
+
+.visual-pane__canvas {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  background:
+    linear-gradient(#ffffff08 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff08 1px, transparent 1px),
+    radial-gradient(circle at 18% 12%, #8b5cf638, transparent 38%),
+    radial-gradient(circle at 82% 78%, #0891b238, transparent 40%),
+    #090b12;
+  background-size: 28px 28px, 28px 28px, auto, auto, auto;
+}
+
+.visual-pane__canvas--filled {
+  background: #090b12;
+}
+
+.visual-pane__frame {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  background: #090b12;
+}
+
+.visual-pane__image {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background:
+    linear-gradient(45deg, #111520 25%, transparent 25%),
+    linear-gradient(-45deg, #111520 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #111520 75%),
+    linear-gradient(-45deg, transparent 75%, #111520 75%),
+    #0b0e16;
+  background-size: 18px 18px;
+  background-position: 0 0, 0 9px, 9px -9px, -9px 0;
+}
+
+.visual-pane__image img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 40px #00000070);
+}
+
+.visual-pane__artifact {
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  max-width: calc(100% - 18px);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 5px 4px 8px;
+  border: 1px solid #ffffff18;
+  border-radius: 6px;
+  color: #d7d9e0;
+  background: #090b12c7;
+  box-shadow: 0 8px 22px #00000040;
+  backdrop-filter: blur(12px);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  overflow: hidden;
+}
+
+.visual-pane__artifact > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.visual-pane__artifact-action {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  color: #9da3b4;
+}
+
+.visual-pane__artifact-action:hover {
+  color: #fff;
+  background: #ffffff12;
+}
+
+.visual-pane__empty {
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.visual-pane__mesh,
+.visual-pane__mesh span {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.visual-pane__mesh {
+  opacity: 0.9;
+  filter: saturate(1.15);
+}
+
+.visual-pane__mesh span {
+  width: min(38vw, 390px);
+  height: min(38vw, 390px);
+  margin: auto;
+  border-radius: 45% 55% 62% 38%;
+  filter: blur(36px);
+  animation: visual-drift 15s ease-in-out infinite alternate;
+}
+
+.visual-pane__mesh span:nth-child(1) {
+  translate: -28% -18%;
+  scale: 0.72;
+  background: #8b5cf64d;
+}
+
+.visual-pane__mesh span:nth-child(2) {
+  translate: 30% 20%;
+  scale: 0.82;
+  background: #06b6d44a;
+  animation-delay: -6s;
+  animation-direction: alternate-reverse;
+}
+
+.visual-pane__mesh span:nth-child(3) {
+  translate: 10% -32%;
+  scale: 0.48;
+  background: #ec489940;
+  animation-delay: -10s;
+}
+
+.visual-pane__empty-copy {
+  position: relative;
+  z-index: 1;
+  width: min(420px, calc(100% - 48px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  text-align: center;
+  text-shadow: 0 2px 18px #000;
+}
+
+.visual-pane__empty-copy strong {
+  color: #f2f0ff;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.visual-pane__empty-copy > span:last-of-type {
+  color: #a5a8b5;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.visual-pane__eyebrow {
+  color: #b8a5ff;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+}
+
+.visual-pane__starters {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 7px;
+}
+
+.visual-pane__starters .btn {
+  border-color: #ffffff21;
+  background: #11141fc7;
+  backdrop-filter: blur(12px);
+}
+
+.visual-pane__attention {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 9px;
+  border-top: 1px solid #f14c4c40;
+  color: #ffb4b4;
+  background: #21151be8;
+  font-size: 10.5px;
+}
+
+.visual-pane__attention > span:nth-child(2) {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.visual-pane__attention--failed {
+  border-top-color: #f8514966;
+  color: #ffc9c4;
+}
+
+.visual-pane__composer {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 9px 7px;
+  border-top: 1px solid #ffffff14;
+  background: linear-gradient(180deg, #11131bf5, #0b0d14);
+  cursor: text;
+}
+
+.visual-pane__composer--dropping {
+  outline: 2px dashed var(--visual-cyan);
+  outline-offset: -4px;
+}
+
+.visual-pane__prompt-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  padding: 5px 5px 5px 9px;
+  border: 1px solid #ffffff1f;
+  border-radius: 9px;
+  background: #1b1e28;
+  box-shadow: 0 10px 28px #00000035;
+}
+
+.visual-pane__prompt-row:focus-within {
+  border-color: #8b5cf699;
+  box-shadow: 0 0 0 1px #8b5cf629, 0 10px 28px #00000035;
+}
+
+.visual-pane__prompt-mark {
+  align-self: flex-start;
+  padding-top: 6px;
+  color: #b8a5ff;
+  font-size: 13px;
+}
+
+.visual-pane__prompt-row textarea {
+  flex: 1;
+  min-width: 0;
+  min-height: 30px;
+  max-height: 130px;
+  resize: none;
+  padding: 5px 2px 3px;
+  border: 0;
+  border-radius: 0;
+  color: #e7e7ec;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.visual-pane__prompt-row textarea:focus {
+  border: 0;
+}
+
+.visual-pane__prompt-row textarea:disabled {
+  opacity: 0.58;
+}
+
+.visual-pane__create {
+  flex: 0 0 auto;
+  height: 30px;
+  min-width: 62px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--visual-violet), #6d5de7 58%, #4874e7);
+  font-size: 10.5px;
+  font-weight: 650;
+}
+
+.visual-pane__create:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.visual-pane__create:disabled {
+  color: #777b88;
+  background: #282b35;
+  cursor: not-allowed;
+}
+
+.visual-pane__prompt-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #646a79;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.visual-pane__prompt-meta span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.visual-pane__drop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #dffaff;
+  background: #10131cf2;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  pointer-events: none;
+}
+
+@keyframes visual-drift {
+  from {
+    rotate: -8deg;
+    transform: translate3d(-5%, -3%, 0) scale(0.92);
+  }
+  to {
+    rotate: 12deg;
+    transform: translate3d(7%, 5%, 0) scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visual-pane__mesh span {
+    animation: none;
+  }
+}
+
+/* ── @mention picker ───────────────────────────────────────────────────── */
+
+/* The popup is positioned against the input row, not the composer, so it stays
+   pinned to the textarea as the repo picker and reply strip change the
+   composer's height above it. */
+.composer__row--anchored {
+  position: relative;
+}
+
+.mention {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  width: min(420px, 100%);
+  z-index: 40;
+  background: var(--bg-panel, var(--bg-app));
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  padding: 4px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.mention__row {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  width: 100%;
+  padding: 5px 7px;
+  border-radius: 5px;
+  font-size: 12px;
+  text-align: left;
+  background: transparent;
+  color: var(--fg);
+}
+
+.mention__row--on {
+  background: var(--bg-input);
+}
+
+.mention__row--dead {
+  opacity: 0.5;
+}
+
+.mention__dot {
+  font-size: 9px;
+  flex: 0 0 auto;
+}
+
+.mention__name {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-weight: 600;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Generalized roles can repeat. Keep the recent work readable so the picker
+   can distinguish conversations before inserting an exact session address. */
+.mention__title {
+  color: var(--fg-muted);
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+  flex: 1 1 auto;
+}
+
+.mention__flag {
+  font-size: 10px;
+  color: var(--fg-dim);
+  flex: 0 0 auto;
+}
+
+.mention__hint {
+  font-size: 10px;
+  color: var(--fg-dim);
+  padding: 4px 7px 2px;
+  border-top: 1px solid var(--border);
+  margin-top: 3px;
+}
+
+/* ── relay reply ───────────────────────────────────────────────────────── */
+
+.relayout {
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 7px 9px;
+  background: var(--bg-input);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.relayout--warn {
+  border-left-color: var(--warn, #d08a3a);
+}
+
+.relayout__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font-size: 11.5px;
+}
+
+.relayout__x {
+  margin-left: auto;
+  background: transparent;
+  color: var(--fg-dim);
+  font-size: 11px;
+}
+
+.relayout__body {
+  margin: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+}
+
+/* ── status bar ────────────────────────────────────────────────────────── */
+
+.statusbar {
+  height: var(--statusbar-h);
+  min-height: var(--statusbar-h);
+  background: var(--bg-app);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px;
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
+.statusbar__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 4px;
+  height: 100%;
+  white-space: nowrap;
+}
+
+.statusbar__item--button:hover {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.statusbar__spacer {
+  flex: 1;
+}
+
+.statusbar__warn {
+  color: var(--status-running);
+}
+
+/* ── overlays ──────────────────────────────────────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 96px;
+  z-index: 100;
+}
+
+.palette {
+  width: 620px;
+  max-width: calc(100vw - 48px);
+  max-height: 60vh;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: var(--shadow-overlay);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.palette__input {
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  padding: 12px 14px;
+  font-size: 14px;
+}
+
+.palette__input:focus {
+  border-color: var(--border);
+  border-bottom-color: var(--accent);
+}
+
+.palette__list {
+  overflow-y: auto;
+  padding: 5px 0;
+}
+
+.palette__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.palette__item--active {
+  background: var(--bg-selected);
+  color: var(--fg-strong);
+}
+
+.palette__item-sub {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--fg-dim);
+}
+
+.palette__item--active .palette__item-sub {
+  color: var(--fg-muted);
+}
+
+.palette__empty {
+  padding: 20px 14px;
+  color: var(--fg-dim);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+/* modal dialog */
+.modal {
+  width: 520px;
+  max-width: calc(100vw - 48px);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: var(--shadow-overlay);
+  overflow: hidden;
+}
+
+.modal__head {
+  padding: 14px 16px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg-strong);
+  border-bottom: 1px solid var(--border);
+}
+
+.modal__body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.modal__foot {
+  padding: 10px 16px 14px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field__label {
+  font-size: 11.5px;
+  color: var(--fg-muted);
+  font-weight: 500;
+}
+
+.field__row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.field__hint {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+}
+
+.field__hint--error {
+  color: var(--status-failed);
+}
+
+/* ── agent profiles (Settings → Agents) ────────────────────────────────── */
+
+/* A generic horizontal group. Inputs take the slack, buttons keep their size —
+   `.btn` is `flex: 1` by default, which is right in a dialog footer and wrong
+   next to two text fields. */
+.row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.row > .btn {
+  flex: 0 0 auto;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  font-size: 11.5px;
+}
+
+.agentrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 2px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.agentrow:last-of-type {
+  border-bottom: none;
+}
+
+/* The colour is the agent's identity everywhere else in the app — the pane
+   chip, the sidebar row, the switcher. Showing it here is how you pick one
+   that is not already taken. */
+.agentrow__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.agentrow__name {
+  font-weight: 500;
+}
+
+/* The command, or why it will not launch. Pushed right and dimmed: it is the
+   answer to a question you only ask when something is wrong. */
+.agentrow__meta {
+  margin-left: auto;
+  color: var(--fg-dim);
+  font-size: 10.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn--tiny {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  font-size: 10.5px;
+}
+
+/* ── session bus ───────────────────────────────────────────────────────── */
+
+.modal--wide {
+  width: 720px;
+}
+
+.buslist,
+.buslog {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px;
+  background: var(--bg-input);
+}
+
+.bus__empty {
+  padding: 10px;
+  color: var(--fg-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.busrow {
+  /* Keep identity above the permission choices. Five full grant names cannot
+     share a narrow line with an agent's title and project without hiding the
+     very information the user needs to decide whose access they are changing. */
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  align-items: start;
+  gap: 4px 8px;
+  padding: 8px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.busrow:hover {
+  background: var(--bg-hover);
+}
+
+.busgrant {
+  margin: 8px 6px 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-app);
+}
+
+.busgrant .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.busrow__title {
+  grid-column: 2;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+  color: var(--fg);
+}
+
+.busrow__meta {
+  grid-column: 2;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--fg-muted);
+  font-size: 11px;
+}
+
+.busrow > .dot { margin-top: 5px; }
+.busrow > .segmented { grid-column: 2; justify-self: start; flex-wrap: wrap; max-width: 100%; }
+
+.segmented--tight {
+  flex: 0 0 auto;
+  padding: 1px;
+}
+
+.segmented--tight .segmented__opt {
+  flex: 0 0 auto;
+  padding: 2px 9px;
+  font-size: 11px;
+}
+
+.buslogrow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-family: var(--font-mono, monospace);
+  color: var(--fg-muted);
+}
+
+/* A refusal is not a warning to be tucked away — it is the line you came here
+   to find. */
+.buslogrow--refused {
+  background: #f14c4c14;
+  color: var(--status-waiting, #f14c4c);
+}
+
+.buslogrow__time {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.buslogrow__who {
+  flex: 0 0 auto;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--fg);
+}
+
+.buslogrow--refused .buslogrow__who {
+  color: inherit;
+}
+
+.buslogrow__tool {
+  flex: 0 0 auto;
+  font-weight: 600;
+}
+
+.buslogrow__ms {
+  flex: 0 0 auto;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+.buslogrow__detail {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+.segmented {
+  display: flex;
+  background: var(--bg-input);
+  border-radius: var(--radius);
+  padding: 2px;
+  gap: 2px;
+}
+
+/* For a segmented control whose options are a list rather than a fixed set of
+   modes — the agent picker, which holds however many profiles the user has
+   added. It grows down rather than crushing names into initials. */
+.segmented--wrap {
+  flex-wrap: wrap;
+}
+
+.segmented--wrap .segmented__opt {
+  min-width: 96px;
+}
+
+.segmented__opt {
+  flex: 1;
+  padding: 5px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--fg-muted);
+}
+
+.segmented__opt--on {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+.segmented__opt:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.switch input {
+  width: 30px;
+  height: 17px;
+  appearance: none;
+  background: var(--bg-input);
+  border-radius: 9px;
+  position: relative;
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  flex: 0 0 30px;
+}
+
+.switch input::after {
+  content: '';
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--fg-muted);
+  top: 1px;
+  left: 1px;
+  transition: 0.14s;
+}
+
+.switch input:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.switch input:checked::after {
+  left: 14px;
+  background: var(--accent-ink);
+}
+
+/* find bar, iTerm2 style */
+.findbar {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 5px 7px;
+  box-shadow: var(--shadow-overlay);
+}
+
+.findbar input {
+  width: 200px;
+  padding: 3px 7px;
+  font-size: 12px;
+}
+
+.findbar__count {
+  font-size: 11px;
+  color: var(--fg-dim);
+  min-width: 60px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* context menu */
+.ctxmenu {
+  position: fixed;
+  z-index: 300;
+  min-width: 210px;
+  padding: 4px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  box-shadow: var(--shadow-overlay);
+}
+
+.ctxmenu__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12.5px;
+  color: var(--fg);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.ctxmenu__item:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.ctxmenu__item--danger:hover {
+  background: var(--status-failed);
+  color: var(--danger-ink);
+}
+
+.ctxmenu__sep {
+  height: 1px;
+  margin: 4px 6px;
+  background: var(--border);
+}
+
+.ctxmenu__hint {
+  margin-left: auto;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+}
+
+.ctxmenu__item:hover .ctxmenu__hint {
+  color: inherit;
+}
+
+/* toast */
+.toasts {
+  position: fixed;
+  bottom: 32px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 9px 13px;
+  font-size: 12.5px;
+  color: var(--fg);
+  box-shadow: var(--shadow-overlay);
+  max-width: 380px;
+  pointer-events: auto;
+  animation: slide-in 0.16s ease-out;
+}
+
+.toast--error {
+  border-left-color: var(--status-waiting);
+}
+
+.toast--success {
+  border-left-color: var(--status-done);
+}
+
+/* A toast that carries a verb. It has to look pressable at a glance, because
+   the toast is on screen for six seconds and then the offer is gone. */
+.toast__action {
+  margin-left: 10px;
+  padding: 2px 9px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+  color: var(--accent-ink);
+  background: var(--accent);
+}
+
+.toast__action:hover {
+  background: var(--accent-hover);
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* misc */
+.mono {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+.selectable {
+  user-select: text;
+}
+
+.kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: #ffffff12;
+  border: 1px solid var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+
+/* Activity-bar filter banner — says which view the rail put you in. */
+.sidebar__filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 12px;
+  background: #ffffff08;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar__filter:hover {
+  background: #ffffff12;
+  color: var(--fg);
+}
+
+.sidebar__filter-clear {
+  flex: 0 0 auto;
+  color: var(--accent);
+}
+
+/* ── preview dock ──────────────────────────────────────────────────────── */
+
+/*
+ * The right-hand document pane. It sits beside `.main` rather than inside it,
+ * so the terminals keep their own width and a resize here never reflows a pty.
+ */
+.preview {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-editor);
+  border-left: 1px solid var(--border);
+}
+
+.preview__resizer {
+  position: absolute;
+  left: -3px;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 5;
+}
+
+.preview__resizer:hover,
+.preview__resizer--active {
+  background: var(--accent);
+  opacity: 0.6;
+}
+
+.preview__header {
+  flex: 0 0 auto;
+  min-height: var(--tabbar-h);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px 0 10px;
+  background: var(--bg-tab-inactive);
+  border-bottom: 1px solid var(--border);
+  color: var(--fg-muted);
+}
+
+.preview__title {
+  color: var(--fg-strong);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview__kind {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--fg-dim);
+  font-size: 10px;
+  text-transform: lowercase;
+}
+
+.preview__spacer {
+  flex: 1;
+}
+
+.preview__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: auto;
+  background: var(--bg-editor);
+}
+
+/* These actions belong to the file, outside the isolated document frame. Keep
+   labels visible and wrap on a narrow dock rather than hiding them in icons. */
+.preview__file-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-app);
+}
+
+.preview__file-actions .btn {
+  font-size: 11px;
+  min-height: 28px;
+  padding: 4px 7px;
+  background: var(--bg-input);
+  border-color: var(--border-strong);
+  color: var(--fg);
+}
+
+.preview__file-actions .btn:hover { background: var(--bg-hover); }
+
+.preview__file-actions .btn:focus-visible,
+.ftree__entry:focus-visible,
+.ftree__open:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.preview__drag-file {
+  padding: 6px;
+  font-size: 11px;
+  color: var(--fg-muted);
+  cursor: grab;
+}
+
+.preview__image img[draggable="true"] { cursor: grab; }
+
+/* A drop is a real way to open something here, so it says so. */
+.preview__body--dropping {
+  outline: 2px dashed var(--accent);
+  outline-offset: -6px;
+}
+
+.preview__frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #ffffff;
+}
+
+.preview__image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  /* the checkerboard, so transparent PNGs read as transparent */
+  background-color: #1a1a1a;
+  background-image:
+    linear-gradient(45deg, #232323 25%, transparent 25%),
+    linear-gradient(-45deg, #232323 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #232323 75%),
+    linear-gradient(-45deg, transparent 75%, #232323 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+.preview__image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.preview__footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 22px;
+  min-height: 22px;
+  padding: 0 10px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-app);
+  color: var(--fg-dim);
+  font-size: 10px;
+}
+
+.preview__footer-path {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview__footer-meta {
+  flex: 0 0 auto;
+}
+
+.preview__footer-action {
+  flex: 0 0 auto;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--fg-muted);
+  font-size: 10px;
+}
+
+.preview__footer-action:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.preview__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 24px 18px;
+  overflow: auto;
+}
+
+.preview__empty-title {
+  color: var(--fg-strong);
+  font-size: 13px;
+}
+
+.preview__empty-note {
+  color: var(--fg-muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.preview__empty-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.preview__recents {
+  align-self: stretch;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.preview__recents-head {
+  padding: 2px 0 6px;
+  color: var(--fg-dim);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview__recent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 6px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--fg);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.preview__recent:hover {
+  background: var(--bg-hover);
+}
+
+.preview__recent-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview__recent-time {
+  flex: 0 0 auto;
+  color: var(--fg-dim);
+  font-size: 10px;
+}
+
+/* ── source control ────────────────────────────────────────────────────── */
+
+/*
+ * The Git panel replaces the sessions list in the sidebar rather than opening
+ * beside it, so it has the same 220-320px budget: every row is one line, the
+ * folder is dimmed away from the filename, and the only thing allowed to grow
+ * is the file list itself.
+ */
+.git {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.git__head {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px 6px 10px;
+  color: var(--fg-muted);
+  font-size: 11px;
+}
+
+.git__branch {
+  font-weight: 600;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.git__count {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-dim);
+}
+
+.git__refresh {
+  margin-left: auto;
+}
+
+.git__scope {
+  padding: 0 8px 6px;
+}
+
+.git__scope-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 7px;
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  color: var(--fg-muted);
+  font-size: 11px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.git__scope-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.git__scope-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.git__scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 8px;
+}
+
+.git__group {
+  padding-bottom: 4px;
+}
+
+.git__group-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 3px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fg-dim);
+}
+
+.git__group-count {
+  background: #ffffff10;
+  border-radius: 9px;
+  padding: 1px 6px;
+  min-width: 18px;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+.git__group-action {
+  margin-left: auto;
+  color: var(--fg-dim);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.git__group-action:hover:not(:disabled) {
+  color: var(--fg-strong);
+  text-decoration: underline;
+}
+
+.git__group-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.git__row {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  padding-right: 6px;
+}
+
+.git__row:hover {
+  background: var(--bg-hover);
+}
+
+/* The toggle only appears on hover — a stage button on every row at rest turns
+   the list into a wall of controls, and the list is meant to be read first. */
+.git__toggle {
+  opacity: 0;
+}
+
+.git__row:hover .git__toggle,
+.git__toggle:focus-visible {
+  opacity: 1;
+}
+
+.git__file {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0 4px 0 10px;
+  height: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.git__letter {
+  flex: 0 0 auto;
+  width: 10px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--fg-dim);
+}
+
+.git__letter--added,
+.git__letter--untracked,
+.git__letter--copied {
+  color: var(--status-review);
+}
+
+.git__letter--modified,
+.git__letter--typechange {
+  color: var(--status-working);
+}
+
+.git__letter--deleted {
+  color: var(--status-failed);
+}
+
+.git__letter--renamed {
+  color: var(--accent);
+}
+
+.git__letter--conflicted {
+  color: var(--status-waiting);
+}
+
+.git__name {
+  flex: 0 1 auto;
+  font-size: 12px;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.git__row--deleted .git__name {
+  text-decoration: line-through;
+  color: var(--fg-muted);
+}
+
+.git__dir {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 10px;
+  color: var(--fg-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.git__hint {
+  padding: 2px 10px 6px 20px;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--fg-dim);
+}
+
+.git__clean {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  color: var(--fg-dim);
+  font-size: 11.5px;
+}
+
+.git__commit {
+  border-top: 1px solid var(--border);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.git__message {
+  width: 100%;
+  resize: none;
+  padding: 6px 7px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-input);
+  color: var(--fg);
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.git__message:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.git__message:disabled {
+  opacity: 0.55;
+}
+
+.git__commit-row {
+  display: flex;
+  gap: 6px;
+}
+
+/* The push button says where it is going, so it is allowed to be the wider of
+   the two once it is asking for confirmation. */
+.git__push {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.git__review {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 8px;
+  border-top: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 11.5px;
+}
+
+.git__review:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.git__review:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.panel__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 18px;
+  text-align: center;
+}
+
+.panel__empty-title {
+  color: var(--fg);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.panel__empty-note {
+  color: var(--fg-dim);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.panel__empty .btn {
+  flex: 0 0 auto;
+  margin-top: 4px;
+}
+
+/* ── files & search panels ──────────────────────────────────────────────────
+   Both share the git panel's shape: a fixed head that says what you are
+   looking at, then one scrolling list. Rows are buttons rather than divs so
+   the keyboard reaches them for free. */
+
+.ftree,
+.search {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ftree__head,
+.search__head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 6px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg-dim);
+}
+
+.ftree__root {
+  flex: 1;
+  min-width: 0;
+  font-size: 11.5px;
+  color: var(--fg-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ftree__refresh {
+  flex: 0 0 auto;
+}
+
+.ftree__scroll,
+.search__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 8px;
+}
+
+.ftree__note,
+.search__note {
+  padding: 10px 12px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--fg-dim);
+}
+
+.search__note--bad {
+  color: var(--status-failed);
+}
+
+.ftree__row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 22px;
+  padding-right: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ftree__row:hover {
+  background: var(--bg-hover);
+}
+
+.ftree__row--open {
+  background: var(--bg-selected);
+}
+
+.ftree__entry {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  text-align: left;
+}
+
+.ftree__open {
+  flex: 0 0 auto;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+
+.ftree__open:hover {
+  color: var(--fg-strong);
+  background: var(--bg-hover);
+}
+
+/* Fixed width whether or not there is a chevron, so file names in a folder
+   line up with the folder names beside them instead of shifting left. */
+.ftree__twisty {
+  flex: 0 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-dim);
+  transition: transform 90ms ease;
+}
+
+.ftree__twisty--open {
+  transform: rotate(90deg);
+}
+
+.ftree__name {
+  flex: 0 1 auto;
+  font-size: 12px;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ftree__mark {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding-left: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.search__input {
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  padding: 0 7px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg-input);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.search__input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.search__file {
+  margin-bottom: 2px;
+}
+
+.search__file-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 8px 3px 10px;
+  position: sticky;
+  top: 0;
+  background: var(--bg-sidebar);
+  z-index: 1;
+}
+
+.search__file-name {
+  flex: 0 1 auto;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search__file-dir {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 10px;
+  color: var(--fg-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search__file-count {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+}
+
+.search__hit {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 2px 8px 2px 18px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.search__hit:hover {
+  background: var(--bg-hover);
+}
+
+.search__hit--open {
+  background: var(--bg-selected);
+}
+
+.search__line {
+  flex: 0 0 auto;
+  min-width: 26px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  text-align: right;
+}
+
+/* One line, clipped — the excerpt is already trimmed in main, and wrapping
+   would turn a hundred hits into a page of scrolling. */
+.search__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre;
+}
+
+.search__mark {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* A file the preview pane has no renderer for. Still clickable — the pane
+   explains itself better than a disabled row would. */
+.ftree__row--plain .ftree__name {
+  color: var(--fg-dim);
+}
+/* ── usage meter ───────────────────────────────────────────────────────── */
+
+.usage {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+}
+
+.usage__trigger {
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.usage__trigger--warning {
+  color: var(--status-working);
+}
+.usage__trigger--critical {
+  color: var(--status-failed);
+}
+
+.usage__compact {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.usage__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+.usage__dot--claude {
+  background: var(--agent-claude);
+}
+.usage__dot--codex {
+  background: var(--agent-codex);
+}
+
+.usage__pct--warning {
+  color: var(--status-working);
+}
+.usage__pct--critical {
+  color: var(--status-failed);
+}
+
+/* Anchored to the status bar and opening upwards — there is nothing below. */
+.usage__panel {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  z-index: 40;
+  width: 340px;
+  padding: 10px 12px 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-overlay);
+  cursor: default;
+}
+
+.usage__panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--fg-strong);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.usage__refresh {
+  background: none;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  color: var(--fg-muted);
+  font: inherit;
+  font-weight: 400;
+  padding: 1px 7px;
+  cursor: pointer;
+}
+.usage__refresh:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+.usage__refresh:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.usage__agent + .usage__agent {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.usage__agent-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.usage__agent-name {
+  color: var(--fg-strong);
+}
+
+.usage__plan,
+.usage__stale {
+  color: var(--fg-dim);
+  font-size: 11px;
+}
+.usage__stale {
+  margin-left: auto;
+}
+
+.usage__row {
+  display: grid;
+  /* label · bar · value · reset — the bar takes whatever the text leaves. */
+  grid-template-columns: minmax(64px, auto) 1fr auto;
+  grid-template-areas: 'label track value' '. reset reset';
+  align-items: center;
+  column-gap: 8px;
+  padding: 2px 0;
+}
+
+.usage__row-label {
+  grid-area: label;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+.usage__track {
+  grid-area: track;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-input);
+  overflow: hidden;
+}
+
+.usage__fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--status-review);
+  transition: width 240ms ease;
+}
+.usage__fill--warning {
+  background: var(--status-working);
+}
+.usage__fill--critical {
+  background: var(--status-failed);
+}
+
+.usage__row-value {
+  grid-area: value;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.usage__row-reset {
+  grid-area: reset;
+  color: var(--fg-dim);
+  font-size: 11px;
+}
+.usage__row-reset:empty {
+  display: none;
+}
+
+.usage__error {
+  color: var(--fg-dim);
+  padding: 2px 0;
+}
+
+.usage__note {
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  color: var(--fg-dim);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* ── session sharing ───────────────────────────────────────────────────── */
+
+/* Presence sits in the title bar's action group and has to read as *state*,
+   not as another button: no hover-lift, no border until you point at it. The
+   dot is the only thing that changes on its own, so it carries the colour. */
+.presence {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 340px;
+  padding: 2px 9px 2px 7px;
+  border-radius: 11px;
+  background: #ffffff08;
+  font-size: 11px;
+  color: var(--fg-muted);
+  cursor: pointer;
+  overflow: hidden;
+  -webkit-app-region: no-drag;
+}
+
+.presence:hover {
+  background: #ffffff16;
+  color: var(--fg-strong);
+}
+
+.presence__live {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: var(--status-review, #4c9a5a);
+}
+
+/* A public link and a LAN-only one are the same feature with very different
+   blast radii, so the dot says which without opening the dialog. */
+.presence__live--public {
+  box-shadow: 0 0 0 3px #4c9a5a26;
+}
+
+.presence__empty {
+  color: var(--fg-dim);
+}
+
+.presence__guest {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.presence__guest--typing {
+  color: var(--fg-strong);
+}
+
+.presence__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  border-radius: 50%;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: #0d1117;
+}
+
+.share__lede {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--fg-muted);
+}
+
+.share__note {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--fg-dim);
+}
+
+.share__link {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.share__link input {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+.share__link .btn {
+  flex: 0 0 auto;
+}
+
+.share__reach {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 10px 0 4px;
+  font-size: 11.5px;
+  color: var(--fg-muted);
+}
+
+.share__reach--ok {
+  color: var(--status-review, #4c9a5a);
+}
+
+.share__reach--warn {
+  color: var(--status-waiting, #d2a24c);
+}
+
+.share__empty {
+  font-size: 11.5px;
+  color: var(--fg-dim);
+  padding: 8px 0;
+}
+
+.share__guests {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.share__guests li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 7px;
+  border-radius: 6px;
+  background: #ffffff08;
+}
+
+.share__name {
+  flex: 1;
+  font-size: 12px;
+  color: var(--fg-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.share__role {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+}
+
+.btn--sm {
+  flex: 0 0 auto;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+/* ── context shelf ─────────────────────────────────────────────────────── */
+
+.shelf__save {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr auto;
+  gap: 6px;
+}
+.shelf__save input {
+  min-width: 0;
+}
+
+.shelf__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* A shelf grows without limit; the panel must not. */
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.shelf__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.shelf__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.shelf__name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.shelf__meta {
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.shelf__note {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/*
+  The first prompt is how a person recognises a checkpoint, so it is always
+  shown — but it is one line of it, not the paragraph they typed.
+*/
+.shelf__prompt {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.8;
+}
+
+.shelf__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ── context shelf, in the sidebar ─────────────────────────────────────────
+   Rows are deliberately shaped like the session list: a checkpoint is a
+   conversation you can go back to, so it should read like one. */
+.shelfpanel {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  overflow-y: auto;
+}
+.shelfrow {
+  padding: 4px 8px 6px;
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.05));
+  position: relative;
+}
+.shelfrow:hover {
+  background: var(--bg-hover, rgba(255, 255, 255, 0.04));
+}
+.shelfrow__main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--text, #ddd);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.shelfrow__name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.shelfrow__turns {
+  font-size: 10px;
+  opacity: 0.5;
+  font-variant-numeric: tabular-nums;
+}
+.shelfrow__sub {
+  margin: 2px 0 0 20px;
+  font-size: 11px;
+  opacity: 0.55;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Tools stay out of the way until the row is under the pointer — the same
+   restraint the session rows use, for the same reason. */
+.shelfrow__tools {
+  position: absolute;
+  top: 3px;
+  right: 6px;
+  display: none;
+  gap: 2px;
+}
+.shelfrow:hover .shelfrow__tools,
+.shelfrow:focus-within .shelfrow__tools {
+  display: flex;
+}
+.shelfrow__edit {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.shelfrow__edit input {
+  background: var(--bg-input, rgba(0, 0, 0, 0.3));
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  border-radius: 3px;
+  color: inherit;
+  font: inherit;
+  padding: 3px 5px;
+}
+.iconbtn--xs {
+  padding: 2px;
+  opacity: 0.6;
+}
+.iconbtn--xs:hover {
+  opacity: 1;
+}
+
+/* One reachable separator across all panels. Captured pointer drags keep
+ * embedded documents from swallowing the release event. */
+.resize-handle { touch-action: none; user-select: none; flex: 0 0 auto; z-index: 8; position: relative; }
+.resize-handle--x { cursor: col-resize; width: 8px; }
+.resize-handle--y { cursor: row-resize; height: 8px; }
+.resize-handle--right, .resize-handle--left { position: absolute; top: 0; bottom: 0; }
+.resize-handle--right { right: -4px; }
+.resize-handle--left { left: -4px; }
+.resize-handle--rail { margin: 0 -4px; }
+.resize-handle:hover, .resize-handle:focus-visible, .resize-handle.is-dragging { background: var(--accent); opacity: .65; outline: none; }
+body[data-resizing] iframe { pointer-events: none !important; }
+body[data-resizing="x"], body[data-resizing="x"] * { cursor: col-resize !important; user-select: none !important; }
+body[data-resizing="y"], body[data-resizing="y"] * { cursor: row-resize !important; user-select: none !important; }
+
+.project-share .modal__body { display: flex; flex-direction: column; gap: 14px; }
+.project-share p { margin: 0; line-height: 1.6; }
+.project-share code { overflow-wrap: anywhere; }
+.sync-filelist { max-height: 160px; overflow: auto; padding: 12px; background: var(--bg-input); font-size: 11px; }
+.sync-conflict { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.sync-conflict > code { width: 100%; }
+.sync-conflict > span { flex: 1; font-size: 11px; }
+
+.composer { position: relative; }
+.resize-handle--top { position: absolute; top: -4px; left: 0; right: 0; }
+
+/* Updates use the same quiet surfaces as Settings. Status stays textual so a
+   muted accent is never the only indication of progress or a failed download. */
+.updates-panel { display: flex; flex-direction: column; gap: 18px; padding-top: 18px; }
+.updates-panel__heading { display: flex; align-items: center; gap: 14px; }
+.updates-panel__heading h2 { margin: 0 0 6px; font-size: 18px; font-weight: 600; }
+.updates-panel__heading p { margin: 0; opacity: .65; }
+.updates-panel__symbol { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--border); border-radius: 12px; font-size: 26px; }
+.updates-panel__channel { margin-left: auto; padding: 4px 9px; border: 1px solid var(--border); border-radius: 20px; font-size: 11px; }
+.updates-panel__facts { display: flex; flex-wrap: wrap; gap: 22px; padding: 16px 0; margin: 0; border-block: 1px solid var(--border); }
+.updates-panel__facts dt { font-size: 11px; opacity: .65; margin-bottom: 7px; }
+.updates-panel__facts dd { margin: 0; font-size: 12px; }
+.updates-panel__notes h3 { margin: 0 0 10px; font-size: 12px; }
+.updates-panel__notes p { white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; line-height: 1.7; font-size: 12px; max-height: 180px; overflow: auto; }
+.updates-panel__manual { padding: 12px; margin: 0; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.6; }
+.updates-panel__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.updates-panel progress { width: 100%; height: 6px; accent-color: var(--fg); }
+.px-sidebottom .update-notice { color: var(--fg); border: 1px solid var(--border); border-radius: 7px; padding: 8px 10px; margin-bottom: 6px; }
+
+/* A session's job title and recent work are separate reading lines. Fixed row
+   heights would hide the second line on narrow rails and at larger text sizes. */
+.palette__session-copy { display: grid; gap: 4px; min-width: 0; white-space: normal; overflow-wrap: anywhere; line-height: 1.45; }
+.palette__session-copy > span { font-size: 11px; color: var(--fg-muted); }
+.palette__session-copy .palette__item-sub { margin-left: 0; color: var(--fg-dim); }
+
+.busrow__about { display: block; margin-top: 4px; font-size: 11px; color: var(--fg-muted); }

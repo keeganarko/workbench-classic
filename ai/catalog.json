@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-09-04",
+  "status": "Local prototype; licenses are publisher-reported, review each card before redistribution.",
+  "models": [
+    {
+      "name": "Qwen3 Embedding 0.6B",
+      "use": "Project retrieval",
+      "hub": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
+      "license": "Apache-2.0",
+      "runner": "qwen3-embedding:0.6b",
+      "testedDigest": "ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d"
+    },
+    {
+      "name": "Qwen3.5 4B",
+      "use": "Local structured-task evaluation",
+      "hub": "https://huggingface.co/Qwen/Qwen3.5-4B",
+      "license": "Apache-2.0",
+      "runner": "qwen3.5:4b",
+      "testedDigest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd"
+    },
+    {
+      "name": "Docling standard pipeline",
+      "use": "Local PDF layout and table extraction",
+      "hub": "https://huggingface.co/docling-project",
+      "license": "Review each downloaded model card",
+      "runner": "Docling 2.126.0; CPU; OCR opt-in"
+    },
+    {
+      "name": "Granite Docling 258M",
+      "use": "Future document-parser candidate; not installed by this prototype",
+      "hub": "https://huggingface.co/ibm-granite/granite-docling-258M",
+      "license": "Apache-2.0"
+    }
+  ],
+  "datasets": [
+    {
+      "name": "Workbench search diagnostic",
+      "path": "ai/evals/search-questions.json",
+      "license": "CC0-1.0",
+      "use": "40 authored questions; not blinded acceptance evidence"
+    },
+    {
+      "name": "Workbench model diagnostic",
+      "path": "ai/evals/model-tasks.json",
+      "license": "CC0-1.0",
+      "use": "20 deterministic short tasks; not a coding-agent benchmark"
+    },
+    {
+      "name": "Workbench demo corpus",
+      "path": "ai/fixtures/demo",
+      "license": "CC0-1.0",
+      "use": "Invented shareable sample content"
+    },
+    {
+      "name": "DocLayNet",
+      "hub": "https://huggingface.co/datasets/docling-project/DocLayNet",
+      "license": "Card licensing section: CDLA-Permissive-1.0",
+      "use": "Future representative layout evaluation; not downloaded"
+    },
+    {
+      "name": "SWE-bench Verified",
+      "hub": "https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified",
+      "license": "Redistribution rights require review",
+      "use": "Future agent evaluation; not downloaded or executed"
+    }
+  ],
+  "subscription": {
+    "plan": "Hugging Face Free",
+    "newPaidServiceSpend": 0,
+    "pro": "Not needed for these local tools; no subscription purchased"
+  }
+}

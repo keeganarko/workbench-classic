@@ -1,0 +1,132 @@
+name: Publish Beta
+
+# A push (including a version bump or tag) is never a release. The owner uses
+# Run workflow and explicitly enables publishing; the default is a rehearsal.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact package.json version, e.g. 1.0.1-beta.1
+        required: true
+        type: string
+      notes:
+        description: What changed in this update?
+        required: true
+        type: string
+      publish:
+        description: Publish update to users (off = build-only rehearsal)
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workbench-beta-release
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      commit: ${{ steps.release.outputs.commit }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+      - id: release
+        name: Validate version and matching machine branches
+        run: node scripts/release.mjs prepare
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_NOTES: ${{ inputs.notes }}
+          RELEASE_PUBLISH: ${{ inputs.publish }}
+
+  build:
+    needs: prepare
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: Mac Apple silicon, runner: macos-15, platform: darwin, arch: arm64 }
+          - { name: Mac Intel, runner: macos-15-intel, platform: darwin, arch: x64 }
+          - { name: Windows Intel AMD, runner: windows-latest, platform: win32, arch: x64 }
+          - { name: Windows ARM, runner: windows-11-arm, platform: win32, arch: arm64 }
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.prepare.outputs.commit }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run verify
+      - name: Build installer and verified update metadata
+        run: node scripts/release.mjs package
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+          RELEASE_COMMIT: ${{ needs.prepare.outputs.commit }}
+          RELEASE_ARCH: ${{ matrix.arch }}
+          RELEASE_NOTES: ${{ inputs.notes }}
+          MAC_CSC_LINK: ${{ matrix.platform == 'darwin' && secrets.MAC_CSC_LINK || '' }}
+          WIN_CSC_LINK: ${{ matrix.platform == 'win32' && secrets.WIN_CSC_LINK || '' }}
+          MAC_CSC_KEY_PASSWORD: ${{ matrix.platform == 'darwin' && secrets.MAC_CSC_KEY_PASSWORD || '' }}
+          WIN_CSC_KEY_PASSWORD: ${{ matrix.platform == 'win32' && secrets.WIN_CSC_KEY_PASSWORD || '' }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - name: Verify native update package
+        run: node --import ./test/ts-resolve.mjs scripts/verify-update-package.mjs
+        env:
+          RELEASE_ARCH: ${{ matrix.arch }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: beta-${{ matrix.platform }}-${{ matrix.arch }}
+          path: release/update-assets/
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+      RELEASE_COMMIT: ${{ needs.prepare.outputs.commit }}
+      RELEASE_NOTES: ${{ inputs.notes }}
+      RELEASE_PUBLISH: ${{ inputs.publish }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.prepare.outputs.commit }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: beta-*
+          merge-multiple: true
+          path: release/update-assets/
+      - name: Verify every download belongs to this release
+        run: node scripts/release.mjs assemble
+      - name: Keep the complete rehearsal bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: workbench-beta-${{ needs.prepare.outputs.version }}
+          path: release/update-assets/
+          retention-days: 14
+      - name: Publish complete update to users
+        if: ${{ inputs.publish }}
+        run: node scripts/release.mjs publish
+        env:
+          GH_TOKEN: ${{ github.token }}

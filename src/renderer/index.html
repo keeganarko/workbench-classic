@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: wb-preview:; script-src 'self'; frame-src wb-preview: http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:*"
+    />
+    <!--
+      `frame-src wb-preview:` is what lets the preview dock embed a document at
+      all, and `img-src` covers the image kinds, which are shown as plain
+      `<img>` rather than in a frame. Both are limited to the preview scheme,
+      which only ever serves files the app has explicitly opened.
+    -->
+    <title>Workbench Beta</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

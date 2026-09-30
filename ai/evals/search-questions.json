@@ -1,0 +1,288 @@
+{
+  "version": 1,
+  "name": "Workbench 40-question authored retrieval diagnostic v1",
+  "license": "CC0-1.0",
+  "acceptance": "Independent user-held-out validation still required",
+  "questions": [
+    {
+      "id": "search-01",
+      "query": "How do I view a report an agent just wrote?",
+      "sources": [
+        "docs/preview.md"
+      ]
+    },
+    {
+      "id": "search-02",
+      "query": "Can a generated page run its own JavaScript in the preview pane?",
+      "sources": [
+        "docs/preview.md"
+      ]
+    },
+    {
+      "id": "search-03",
+      "query": "Why do Mermaid code blocks appear as code instead of diagrams?",
+      "sources": [
+        "docs/preview.md"
+      ]
+    },
+    {
+      "id": "search-04",
+      "query": "What happens when I drop a PDF into Workbench?",
+      "sources": [
+        "docs/preview.md"
+      ]
+    },
+    {
+      "id": "search-05",
+      "query": "How do I add a different coding assistant CLI?",
+      "sources": [
+        "docs/agents.md"
+      ]
+    },
+    {
+      "id": "search-06",
+      "query": "Why does a custom agent not support native resume?",
+      "sources": [
+        "docs/agents.md"
+      ]
+    },
+    {
+      "id": "search-07",
+      "query": "What happens when I fork a session whose assistant cannot fork?",
+      "sources": [
+        "docs/agents.md"
+      ]
+    },
+    {
+      "id": "search-08",
+      "query": "Can I rename a custom assistant without losing its sessions?",
+      "sources": [
+        "docs/agents.md"
+      ]
+    },
+    {
+      "id": "search-09",
+      "query": "How can a friend watch my terminal without installing Workbench?",
+      "sources": [
+        "docs/sharing.md"
+      ]
+    },
+    {
+      "id": "search-10",
+      "query": "Who can give a viewer permission to type?",
+      "sources": [
+        "docs/sharing.md"
+      ]
+    },
+    {
+      "id": "search-11",
+      "query": "Why does an old temporary sharing link stop working?",
+      "sources": [
+        "docs/sharing.md"
+      ]
+    },
+    {
+      "id": "search-12",
+      "query": "How many guests can join one shared terminal?",
+      "sources": [
+        "docs/sharing.md"
+      ]
+    },
+    {
+      "id": "search-13",
+      "query": "How do two people exchange saved files in a project folder?",
+      "sources": [
+        "docs/project-sync.md"
+      ]
+    },
+    {
+      "id": "search-14",
+      "query": "What happens when both collaborators change the same file?",
+      "sources": [
+        "docs/project-sync.md"
+      ]
+    },
+    {
+      "id": "search-15",
+      "query": "Where are files backed up before a sync replaces them?",
+      "sources": [
+        "docs/project-sync.md"
+      ]
+    },
+    {
+      "id": "search-16",
+      "query": "Does project sharing copy terminal sessions and credentials?",
+      "sources": [
+        "docs/project-sync.md"
+      ]
+    },
+    {
+      "id": "search-17",
+      "query": "Which Git branch belongs to my MacBook?",
+      "sources": [
+        "docs/branching.md"
+      ]
+    },
+    {
+      "id": "search-18",
+      "query": "How should I bring changes from the other machine into my branch?",
+      "sources": [
+        "docs/branching.md"
+      ]
+    },
+    {
+      "id": "search-19",
+      "query": "What should an old prototype checkout switch to?",
+      "sources": [
+        "docs/branching.md"
+      ]
+    },
+    {
+      "id": "search-20",
+      "query": "Does pulling source code update the installed Mac app?",
+      "sources": [
+        "docs/branching.md"
+      ]
+    },
+    {
+      "id": "search-21",
+      "query": "Can the output pane edit a document?",
+      "sources": [
+        "docs/preview.md"
+      ]
+    },
+    {
+      "id": "search-22",
+      "query": "What is the command for showing an existing generated document?",
+      "sources": [
+        "docs/preview.md"
+      ]
+    },
+    {
+      "id": "search-23",
+      "query": "Which file types can the output pane render?",
+      "sources": [
+        "docs/preview.md"
+      ]
+    },
+    {
+      "id": "search-24",
+      "query": "How do I reopen a recent generated artifact?",
+      "sources": [
+        "docs/preview.md"
+      ]
+    },
+    {
+      "id": "search-25",
+      "query": "Why are assistant capabilities declared individually?",
+      "sources": [
+        "docs/agents.md"
+      ]
+    },
+    {
+      "id": "search-26",
+      "query": "Which characters are allowed in a custom agent identifier?",
+      "sources": [
+        "docs/agents.md"
+      ]
+    },
+    {
+      "id": "search-27",
+      "query": "Will removing a custom profile kill its existing sessions?",
+      "sources": [
+        "docs/agents.md"
+      ]
+    },
+    {
+      "id": "search-28",
+      "query": "Where is the assistant launch specification built?",
+      "sources": [
+        "docs/agents.md"
+      ]
+    },
+    {
+      "id": "search-29",
+      "query": "Why does terminal sharing send pictures instead of terminal bytes?",
+      "sources": [
+        "docs/sharing.md"
+      ]
+    },
+    {
+      "id": "search-30",
+      "query": "Does a terminal guest get access to the file tree?",
+      "sources": [
+        "docs/sharing.md"
+      ]
+    },
+    {
+      "id": "search-31",
+      "query": "Can terminal sharing work without cloudflared?",
+      "sources": [
+        "docs/sharing.md"
+      ]
+    },
+    {
+      "id": "search-32",
+      "query": "What happens to guests when the host stops sharing?",
+      "sources": [
+        "docs/sharing.md"
+      ]
+    },
+    {
+      "id": "search-33",
+      "query": "How do I pause automatic project file exchange?",
+      "sources": [
+        "docs/project-sync.md"
+      ]
+    },
+    {
+      "id": "search-34",
+      "query": "Can I invite a project collaborator by email?",
+      "sources": [
+        "docs/project-sync.md"
+      ]
+    },
+    {
+      "id": "search-35",
+      "query": "Do empty folders and executable-bit changes get synchronized?",
+      "sources": [
+        "docs/project-sync.md"
+      ]
+    },
+    {
+      "id": "search-36",
+      "query": "How often does the app check a shared project for saved changes?",
+      "sources": [
+        "docs/project-sync.md"
+      ]
+    },
+    {
+      "id": "search-37",
+      "query": "Should I force push to replace the other machine’s work?",
+      "sources": [
+        "docs/branching.md"
+      ]
+    },
+    {
+      "id": "search-38",
+      "query": "What is the safe command to remove a fully merged retired branch?",
+      "sources": [
+        "docs/branching.md"
+      ]
+    },
+    {
+      "id": "search-39",
+      "query": "Which packaging command builds the Windows installer?",
+      "sources": [
+        "docs/branching.md"
+      ]
+    },
+    {
+      "id": "search-40",
+      "query": "Why do both machine branches carry the same conditional code?",
+      "sources": [
+        "docs/branching.md"
+      ]
+    }
+  ]
+}
